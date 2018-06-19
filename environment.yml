@@ -1,0 +1,10 @@
+name: metabolite_database
+channels:
+    - bioconda
+    - conda-forge
+    - defaults
+dependencies:
+    - flask
+    - flask-wtf
+    - flask-sqlalchemy
+    - flask-migrate

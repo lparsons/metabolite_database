@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - Metabolite Database</title>
+      {% else %}
+      <title>Welcome to the Rabinowitz Lab Metabolite Database</title>
+      {% endif %}
+    </head>
+    <body>
+        <div>
+            Metabolite Database:
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('compounds') }}">Compounds</a>
+            <a href="{{ url_for('methods') }}">Methods</a>
+        </div>
+        <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Compound: {{ compound.name }}</h1>
+    <dl>
+        <dt>Name</dt>
+        <dd>{{ compound.name }}</dd>
+        <dt>Formula</dt>
+        <dd>{{ compound.molecular_formula }}</dd>
+        <dt>Molecular Weight</dt>
+        <dd>{{ compound.molecular_weight }}</dd>
+    </dl>
+    <table>
+        <tr>
+            <th>Method</th>
+            <th>Retetion Time</th>
+        </tr>
+        {% for rt in compound.retention_times %}
+            <tr>
+                <td><a href="{{ url_for('methods') }}">
+                    {{ rt.chromatography_method.name }}</a></td>
+                <td>{{ rt.retention_time }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

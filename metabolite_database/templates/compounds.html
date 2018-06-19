@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Compounds</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Formula</th>
+            <th>Weight</th>
+            <th>Retetion Times</th>
+        </tr>
+        {% for compound in compounds %}
+            <tr>
+                <td><a href="{{ url_for('compound', id=compound.id) }}">
+                    {{ compound.name }}</a></td>
+                <td>{{ compound.molecular_formula }}</td>
+                <td>{{ compound.molecular_weight }}</td>
+                <td>
+                    {% for rt in compound.retention_times %}
+                        <a href="{{ url_for('methods') }}">{{ rt.chromatography_method.name }}</a>
+                        - {{ rt.retention_time }}; 
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Retention Times for Method "{{ method.name }}"</h1>
+    <table>
+        <tr>
+            <th>Compound</th>
+            <th>Formula</th>
+            <th>Weight</th>
+            <th>Retention Time (sec)</th>
+        </tr>
+        {% for compound, rt in results %}
+            <tr>
+                <td><a href="{{ url_for('compound', id=compound.id) }}">
+                    {{ compound.name }}</a></td>
+                <td>{{ compound.molecular_formula }}</td>
+                <td>{{ compound.molecular_weight }}</td>
+                <td>{{ rt.retention_time}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

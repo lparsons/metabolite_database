@@ -1,0 +1,11 @@
+---
+name: Rabinowitz Lab Metabolite Database
+description: Metabolite database used by the Rabinowitz Lab
+contact: Josh Rabinowitz <joshr@princeton.edu>
+pi: Josh Rabinowitz <joshr@princeton.edu>
+lsi_staff: Lance Parsons <lparsons@princeton.edu>
+start_date: 2018-05-01
+completion_date: ""
+repository: https://bitbucket.org/ACCOUNT/PROJECT
+hostname: hostname.princeton.edu
+documentation: README.md
