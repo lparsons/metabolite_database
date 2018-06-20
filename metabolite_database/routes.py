@@ -35,7 +35,7 @@ def compounds():
 
 @app.route('/compound/<id>')
 def compound(id):
-    compound = Compound.query.get(id)
+    compound = Compound.query.filter(Compound.id == id).first_or_404()
     return render_template('compound.html', compound=compound)
 
 
