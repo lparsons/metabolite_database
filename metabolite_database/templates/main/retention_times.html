@@ -11,7 +11,7 @@
         </tr>
         {% for compound, rt in results %}
             <tr>
-                <td><a href="{{ url_for('compound', id=compound.id) }}">
+                <td><a href="{{ url_for('main.compound', id=compound.id) }}">
                     {{ compound.name }}</a></td>
                 <td>{{ compound.molecular_formula }}</td>
                 <td>{{ compound.molecular_weight }}</td>

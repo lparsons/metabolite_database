@@ -17,6 +17,8 @@ bootstrap = Bootstrap(app)
 
 from metabolite_database.errors import bp as errors_bp  # noqa
 app.register_blueprint(errors_bp)
+from metabolite_database.main import bp as main_bp  # noqa
+app.register_blueprint(main_bp)
 
 if not app.debug:
     if app.config['MAIL_SERVER']:

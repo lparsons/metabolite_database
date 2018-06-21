@@ -18,13 +18,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('index') }}">Metabolite Database</a>
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">Metabolite Database</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('compounds') }}">Compounds</a></li>
-                <li><a href="{{ url_for('methods') }}">Methods</a></li>
+                <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('main.compounds') }}">Compounds</a></li>
+                <li><a href="{{ url_for('main.methods') }}">Methods</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if True %}

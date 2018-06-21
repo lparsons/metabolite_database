@@ -17,7 +17,7 @@
         </tr>
         {% for rt in compound.retention_times %}
             <tr>
-                <td><a href="{{ url_for('methods') }}">
+                <td><a href="{{ url_for('main.methods') }}">
                     {{ rt.chromatography_method.name }}</a></td>
                 <td>{{ rt.retention_time }}</td>
             </tr>

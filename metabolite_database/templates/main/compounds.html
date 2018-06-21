@@ -11,13 +11,13 @@
         </tr>
         {% for compound in compounds %}
             <tr>
-                <td><a href="{{ url_for('compound', id=compound.id) }}">
+                <td><a href="{{ url_for('main.compound', id=compound.id) }}">
                     {{ compound.name }}</a></td>
                 <td>{{ compound.molecular_formula }}</td>
                 <td>{{ compound.molecular_weight }}</td>
                 <td>
                     {% for rt in compound.retention_times %}
-                        <a href="{{ url_for('methods') }}">{{ rt.chromatography_method.name }}</a>
+                        <a href="{{ url_for('main.methods') }}">{{ rt.chromatography_method.name }}</a>
                         - {{ rt.retention_time }};
                     {% endfor %}
                 </td>
