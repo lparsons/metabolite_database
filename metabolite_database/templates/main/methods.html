@@ -12,7 +12,8 @@
             <tr>
                 <td>{{ method.name }}</td>
                 <td>{{ method.description }}</td>
-                <td><a href="{{ url_for('main.retention_times', method = method.name) }}">
+                <td><a href="{{ url_for('main.retention_times_for_method',
+                    id = method.id) }}">
                     {{ method.retention_times|length }}</a></td>
             </tr>
         {% endfor %}

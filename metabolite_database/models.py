@@ -49,6 +49,11 @@ class ChromatographyMethod(db.Model):
     retention_times = db.relationship('RetentionTime',
                                       back_populates="chromatography_method")
 
+    def compounds_with_retention_times(self):
+        return db.session.query(Compound, RetentionTime).join(
+            RetentionTime).filter(
+                RetentionTime.chromatography_method_id == self.id)
+
     def __repr__(self):
         return '<ChromatographyMethod {}>'.format(self.name)
 

@@ -1,8 +1,6 @@
 from flask import render_template
-from metabolite_database import db
 from metabolite_database.models import Compound
 from metabolite_database.models import ChromatographyMethod
-from metabolite_database.models import RetentionTime
 from metabolite_database.main import bp
 
 
@@ -21,7 +19,7 @@ def compounds():
 
 @bp.route('/compound/<id>')
 def compound(id):
-    compound = Compound.query.filter(Compound.id == id).first_or_404()
+    compound = Compound.query.filter(id == id).first_or_404()
     return render_template('main/compound.html', compound=compound)
 
 
@@ -31,14 +29,11 @@ def methods():
     return render_template('main/methods.html', methods=methods)
 
 
-@bp.route('/retention_times/<method>')
-@bp.route('/retention-times/<method>')
-@bp.route('/retentiontimes/<method>')
-def retention_times(method):
-    method = ChromatographyMethod.query.filter(
-        ChromatographyMethod.name == method).first_or_404()
-    results = db.session.query(Compound, RetentionTime).\
-        join(RetentionTime).\
-        filter(RetentionTime.chromatography_method.has(name=method.name))
-    return render_template('main/retention_times.html', method=method,
-                           results=results)
+@bp.route('/retention_times/method/<id>')
+@bp.route('/retentiontimes/method/<id>')
+@bp.route('/retention-times/method/<id>')
+def retention_times_for_method(id):
+    method = ChromatographyMethod.query.filter(id == id).first_or_404()
+    results = method.compounds_with_retention_times()
+    return render_template('main/retention_times_for_method.html',
+                           method=method, results=results)
