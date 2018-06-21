@@ -15,10 +15,12 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bootstrap = Bootstrap(app)
 
-from metabolite_database.errors import bp as errors_bp  # noqa
+from metabolite_database.errors import bp as errors_bp  # noqa: E402,F401
 app.register_blueprint(errors_bp)
-from metabolite_database.main import bp as main_bp  # noqa
+from metabolite_database.main import bp as main_bp  # noqa: E402,F401
 app.register_blueprint(main_bp)
+from metabolite_database.auth import bp as auth_bp  # noqa: E402,F401
+app.register_blueprint(auth_bp)
 
 if not app.debug:
     if app.config['MAIL_SERVER']:
@@ -50,7 +52,6 @@ if not app.debug:
     app.logger.info('Microblog startup')
 
 
-from metabolite_database import routes  # noqa: E402,F401
 from metabolite_database import models  # noqa: E402,F401
 
 
