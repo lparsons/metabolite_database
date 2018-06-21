@@ -8,3 +8,4 @@ dependencies:
     - flask-wtf
     - flask-sqlalchemy
     - flask-migrate
+    - flask-bootstrap

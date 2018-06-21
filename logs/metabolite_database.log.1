@@ -1,4 +1,4 @@
-2018-06-20 19:56:18,749 ERROR: Exception on /compounds [GET] [in /home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py:1761]
+2018-06-20 19:56:18,669 ERROR: Exception on /compounds [GET] [in /home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py:1761]
 Traceback (most recent call last):
   File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py", line 2292, in wsgi_app
     response = self.full_dispatch_request()
@@ -35,8 +35,7 @@ Traceback (most recent call last):
   File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/templating.py", line 86, in _get_source_fast
     raise TemplateNotFound(template)
 jinja2.exceptions.TemplateNotFound: bootstrap/base.html
-2018-06-20 19:56:27,448 INFO: Microblog startup [in /home/lparsons/Documents/projects/metabolite_database/metabolite_database/__init__.py:48]
-2018-06-20 19:56:29,917 ERROR: Exception on /compounds [GET] [in /home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py:1761]
+2018-06-20 19:56:18,716 ERROR: Exception on /compounds [GET] [in /home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py:1761]
 Traceback (most recent call last):
   File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py", line 2292, in wsgi_app
     response = self.full_dispatch_request()
@@ -68,14 +67,45 @@ Traceback (most recent call last):
     {% extends "base.html" %}
   File "/home/lparsons/Documents/projects/metabolite_database/metabolite_database/templates/base.html", line 1, in top-level template code
     {% extends 'bootstrap/base.html' %}
-  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 1, in top-level template code
-    {% block doc -%}
-  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 4, in block "doc"
-    {%- block html %}
-  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 20, in block "html"
-    {% block body -%}
-  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask_bootstrap/templates/bootstrap/base.html", line 21, in block "body"
-    {% block navbar %}
-  File "/home/lparsons/Documents/projects/metabolite_database/metabolite_database/templates/base.html", line 25, in block "navbar"
-    <li><a href="{{ url_for('index') }}">{{ _('Home') }}</a></li>
-jinja2.exceptions.UndefinedError: '_' is undefined
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/templating.py", line 58, in get_source
+    return self._get_source_fast(environment, template)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/templating.py", line 86, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: bootstrap/base.html
+2018-06-20 19:56:18,732 ERROR: Exception on /compounds [GET] [in /home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py:1761]
+Traceback (most recent call last):
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/home/lparsons/Documents/projects/metabolite_database/metabolite_database/routes.py", line 33, in compounds
+    return render_template('compounds.html', compounds=compounds)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/templating.py", line 135, in render_template
+    context, ctx.app)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/templating.py", line 117, in _render
+    rv = template.render(context)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/jinja2/asyncsupport.py", line 76, in render
+    return original_render(self, *args, **kwargs)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/jinja2/environment.py", line 1008, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/jinja2/environment.py", line 780, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/jinja2/_compat.py", line 37, in reraise
+    raise value.with_traceback(tb)
+  File "/home/lparsons/Documents/projects/metabolite_database/metabolite_database/templates/compounds.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/home/lparsons/Documents/projects/metabolite_database/metabolite_database/templates/base.html", line 1, in top-level template code
+    {% extends 'bootstrap/base.html' %}
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/templating.py", line 58, in get_source
+    return self._get_source_fast(environment, template)
+  File "/home/lparsons/miniconda3/envs/metabolite_database/lib/python3.6/site-packages/flask/templating.py", line 86, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: bootstrap/base.html
