@@ -5,6 +5,7 @@ from metabolite_database.models import DbXref
 from metabolite_database.models import ExternalDatabase
 from metabolite_database.models import RetentionTime
 from metabolite_database.models import ChromatographyMethod
+from metabolite_database.models import StandardRun
 
 
 app = create_app()
@@ -15,4 +16,5 @@ def make_shell_context():
     return {'db': db, 'Compound': Compound, 'DbXref': DbXref,
             'ExternalDatabase': ExternalDatabase,
             'RetentionTime': RetentionTime,
-            'ChromatographyMethod': ChromatographyMethod}
+            'ChromatographyMethod': ChromatographyMethod,
+            'StandardRun': StandardRun}

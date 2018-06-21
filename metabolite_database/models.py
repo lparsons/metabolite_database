@@ -8,7 +8,7 @@ class Compound(db.Model):
     molecular_weight = db.Column(db.Float, index=True)
     external_databases = db.relationship('DbXref', back_populates="compound")
     retention_times = db.relationship('RetentionTime',
-                                      back_populates="compound")
+                                      backref="compound")
 
     def __repr__(self):
         return '<Compound {}>'.format(self.name)
@@ -46,36 +46,44 @@ class ChromatographyMethod(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), unique=True)
     description = db.Column(db.Text)
-    retention_times = db.relationship('RetentionTime',
-                                      back_populates="chromatography_method")
+    standard_runs = db.relationship('StandardRun',
+                                    backref='chromatography_method')
 
     def compounds_with_retention_times(self):
         return db.session.query(Compound, RetentionTime).join(
-            RetentionTime).filter(
-                RetentionTime.chromatography_method_id == self.id)
+            RetentionTime).join(
+                StandardRun).filter(
+                    StandardRun.chromatography_method_id == self.id)
 
     def __repr__(self):
         return '<ChromatographyMethod {}>'.format(self.name)
 
 
 class RetentionTime(db.Model):
-    chromatography_method_id = db.Column(
-        db.Integer,
-        db.ForeignKey('chromatography_method.id'),
-        primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     compound_id = db.Column(
         db.Integer,
-        db.ForeignKey('compound.id'),
-        primary_key=True)
+        db.ForeignKey('compound.id'))
+    standard_run_id = db.Column(db.Integer, db.ForeignKey('standard_run.id'))
     retention_time = db.Column(db.Float)
-    compound = db.relationship(
-        "Compound", back_populates="retention_times", viewonly=True)
-    chromatography_method = db.relationship(
-        "ChromatographyMethod", back_populates="retention_times",
-        viewonly=True)
 
     def __repr__(self):
         return '<RetentionTime {}>'.format(self.retention_time)
+
+
+class StandardRun(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, index=True)
+    operator = db.Column(db.String(256), index=True)
+    mzxml_file = db.Column(db.String(256), index=True)
+    chromatography_method_id = db.Column(
+        db.Integer, db.ForeignKey('chromatography_method.id'))
+    retention_times = db.relationship('RetentionTime',
+                                      backref='standard_run')
+
+    def __repr__(self):
+        return '<StandardRun for {} by {} at {}>'.format(
+            self.chromatography_method, self.operator, self.date)
 
 
 # class User(db.Model):

@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Compound: {{ compound.name }}</h1>
+    <h1>Standard Run: {{  moment(run.date).format('LLL') }}</h1>
     <dl>
-        <dt>Name</dt>
-        <dd>{{ compound.name }}</dd>
-        <dt>Formula</dt>
-        <dd>{{ compound.molecular_formula }}</dd>
-        <dt>Molecular Weight</dt>
-        <dd>{{ compound.molecular_weight }}</dd>
+        <dt>Date</dt>
+        <dd>{{ moment(run.date).format('LLL') }}</dd>
+        <dt>Operator</dt>
+        <dd>{{ run.operator }}</dd>
+        <dt>mzXML File</dt>
+        <dd>{{ run.mzxml_file }}</dd>
     </dl>
     <table class="table">
         <tr>
+            <th>
             <th>Method</th>
             <th>Retetion Time</th>
         </tr>
         {% for rt in compound.retention_times %}
             <tr>
                 <td><a href="{{ url_for('main.methods') }}">
-                    {{ rt.standard_run.chromatography_method.name }}</a></td>
+                    {{ rt.chromatography_method.name }}</a></td>
                 <td>{{ rt.retention_time }}</td>
             </tr>
         {% endfor %}

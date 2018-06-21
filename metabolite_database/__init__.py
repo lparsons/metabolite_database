@@ -7,11 +7,22 @@ from flask_migrate import Migrate
 from logging.handlers import SMTPHandler
 from logging.handlers import RotatingFileHandler
 from flask_bootstrap import Bootstrap
+from sqlalchemy import MetaData
+from flask_moment import Moment
 
 
-db = SQLAlchemy()
+naming_convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(column_0_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+}
+db = SQLAlchemy(metadata=MetaData(naming_convention=naming_convention))
+
 migrate = Migrate()
 bootstrap = Bootstrap()
+moment = Moment()
 
 
 def create_app(config_class=Config):
@@ -19,8 +30,13 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     db.init_app(app)
-    migrate.init_app(app)
+    with app.app_context():
+        if db.engine.url.drivername == 'sqlite':
+            migrate.init_app(app, db, render_as_batch=True)
+        else:
+            migrate.init_app(app, db)
     bootstrap.init_app(app)
+    moment.init_app(app)
 
     # Blueprint registration
     from metabolite_database.errors import bp as errors_bp  # noqa: E402,F401

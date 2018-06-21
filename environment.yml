@@ -9,3 +9,4 @@ dependencies:
     - flask-sqlalchemy
     - flask-migrate
     - flask-bootstrap
+    - flask-moment

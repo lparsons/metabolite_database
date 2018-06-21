@@ -1,6 +1,7 @@
 from flask import render_template
 from metabolite_database.models import Compound
 from metabolite_database.models import ChromatographyMethod
+from metabolite_database.models import StandardRun
 from metabolite_database.main import bp
 
 
@@ -37,3 +38,19 @@ def retention_times_for_method(id):
     results = method.compounds_with_retention_times()
     return render_template('main/retention_times_for_method.html',
                            method=method, results=results)
+
+
+@bp.route('/standard_runs')
+@bp.route('/standardruns')
+@bp.route('/standard-runs')
+def standard_runs():
+    runs = StandardRun.query.all()
+    return render_template('main/standard_runs.html', runs=runs)
+
+
+@bp.route('/standard_run/<id>')
+@bp.route('/standardrun/<id>')
+@bp.route('/standard-run/<id>')
+def standard_run(id):
+    run = StandardRun.query.filter(id == id).first_or_404()
+    return render_template('main/standard_run.html', run=run)

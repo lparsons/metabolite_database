@@ -8,6 +8,7 @@
             <th>Formula</th>
             <th>Weight</th>
             <th>Retention Time (sec)</th>
+            <th>Standard Run</th>
         </tr>
         {% for compound, rt in results %}
             <tr>
@@ -16,6 +17,7 @@
                 <td>{{ compound.molecular_formula }}</td>
                 <td>{{ compound.molecular_weight }}</td>
                 <td>{{ rt.retention_time}}</td>
+                <td>Run on {{ moment(rt.standard_run.date).format('LLL') }} by {{ rt.standard_run.operator}} - {{ rt.standard_run.mzxml_file }}</td>
             </tr>
         {% endfor %}
     </table>

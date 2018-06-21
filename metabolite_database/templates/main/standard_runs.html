@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>Standard Runs</h1>
+    <table class="table">
+        <tr>
+            <th>Date</th>
+            <th>Operator</th>
+            <th>MzXML File</th>
+            <th>Compound Retetion Times</th>
+        </tr>
+        {% for run in runs %}
+            <tr>
+                <td>{{ moment(run.date).format('LLL') }}</td>
+                <td>{{ run.operator}}</td>
+                <td>{{ run.mzxml_file }}</td>
+                <td>{{ run.retention_times|length }}</a></td>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

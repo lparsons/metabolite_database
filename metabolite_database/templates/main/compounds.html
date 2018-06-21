@@ -17,7 +17,7 @@
                 <td>{{ compound.molecular_weight }}</td>
                 <td>
                     {% for rt in compound.retention_times %}
-                        <a href="{{ url_for('main.methods') }}">{{ rt.chromatography_method.name }}</a>
+                        <a href="{{ url_for('main.methods') }}">{{ rt.standard_run.chromatography_method.name }}</a>
                         - {{ rt.retention_time }};
                     {% endfor %}
                 </td>
