@@ -10,3 +10,4 @@ dependencies:
     - flask-migrate
     - flask-bootstrap
     - flask-moment
+    - python-dotenv

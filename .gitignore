@@ -2,6 +2,7 @@ __pycache__
 *.egg-info
 
 app.db
+.env
 
 results/
 data/
