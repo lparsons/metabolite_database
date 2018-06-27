@@ -1,4 +1,6 @@
 from metabolite_database import db
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import IntegrityError
 
 
 class Compound(db.Model):
@@ -85,6 +87,24 @@ class StandardRun(db.Model):
         return '<StandardRun for {} by {} at {}>'.format(
             self.chromatography_method, self.operator, self.date)
 
+
+def get_one_or_create(session,
+                      model,
+                      create_method='',
+                      create_method_kwargs=None,
+                      **kwargs):
+    try:
+        return session.query(model).filter_by(**kwargs).one(), False
+    except NoResultFound:
+        kwargs.update(create_method_kwargs or {})
+        created = getattr(model, create_method, model)(**kwargs)
+        try:
+            session.add(created)
+            session.flush()
+            return created, True
+        except IntegrityError:
+            session.rollback()
+            return session.query(model).filter_by(**kwargs).one(), False
 
 # class User(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)

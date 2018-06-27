@@ -11,3 +11,4 @@ dependencies:
     - flask-bootstrap
     - flask-moment
     - python-dotenv
+    - dateutil

@@ -20,7 +20,7 @@ def compounds():
 
 @bp.route('/compound/<id>')
 def compound(id):
-    compound = Compound.query.filter(id == id).first_or_404()
+    compound = Compound.query.filter_by(id=id).first_or_404()
     return render_template('main/compound.html', compound=compound)
 
 
@@ -34,7 +34,7 @@ def methods():
 @bp.route('/retentiontimes/method/<id>')
 @bp.route('/retention-times/method/<id>')
 def retention_times_for_method(id):
-    method = ChromatographyMethod.query.filter(id == id).first_or_404()
+    method = ChromatographyMethod.query.filter_by(id=id).first_or_404()
     results = method.compounds_with_retention_times()
     return render_template('main/retention_times_for_method.html',
                            method=method, results=results)
@@ -52,5 +52,5 @@ def standard_runs():
 @bp.route('/standardrun/<id>')
 @bp.route('/standard-run/<id>')
 def standard_run(id):
-    run = StandardRun.query.filter(id == id).first_or_404()
+    run = StandardRun.query.filter_by(id=id).first_or_404()
     return render_template('main/standard_run.html', run=run)
