@@ -1,6 +1,16 @@
+import re
 from metabolite_database import db
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.hybrid import hybrid_property
+
+valid_atoms = {
+    'e': 0.00054857990943,
+    'C': 12.00000000,
+    'H': 1.00782503224,
+    'N': 14.0030740052,
+    'O': 15.9949146221,
+    'P': 30.97376151}
 
 
 class Compound(db.Model):
@@ -11,6 +21,49 @@ class Compound(db.Model):
     external_databases = db.relationship('DbXref', back_populates="compound")
     retention_times = db.relationship('RetentionTime',
                                       backref="compound")
+
+    def is_formula_valid(self):
+        formula = self.molecular_formula
+        if formula == '' or formula is None:
+            return False, formula
+        for atom in valid_atoms.keys():
+            formula = re.sub(r'{}[\d]*'.format(atom), '', formula)
+        if formula != '':
+            return False, formula
+        else:
+            return True, ''
+
+    @hybrid_property
+    def monoisotopic_mass(self):
+        mass = None
+        # print(self.is_formula_valid())
+        if self.is_formula_valid()[0]:
+            # print(self.molecular_formula)
+            mass = 0.0
+            for atom in valid_atoms.keys():
+                num_atom = 0
+                m = re.match(r'.*{}(\d*).*'.format(atom),
+                             self.molecular_formula)
+                if m:
+                    # print("Num {} atoms: {}".format(atom, m.group(1)))
+                    try:
+                        num_atom = int(m.group(1))
+                    except ValueError:
+                        num_atom = 1
+                # print("weight = {} + ({} * {})".format(
+                #       mass, valid_atoms[atom], num_atom))
+                mass += num_atom * valid_atoms[atom]
+        return mass
+
+    def m_z(self, mode):
+        m_z = None
+        if (self.monoisotopic_mass):
+            try:
+                m_z = (self.monoisotopic_mass
+                       - ((valid_atoms['H'] - valid_atoms['e']) * mode))
+            except (AttributeError, TypeError):
+                raise AssertionError("mode must be integer")
+        return m_z
 
     def __repr__(self):
         return '<Compound {}>'.format(self.name)
@@ -56,6 +109,13 @@ class ChromatographyMethod(db.Model):
             RetentionTime).join(
                 StandardRun).filter(
                     StandardRun.chromatography_method_id == self.id)
+
+    def compounds_with_valid_retention_times(self):
+        return db.session.query(Compound, RetentionTime).join(
+            RetentionTime).join(
+                StandardRun).filter(
+                    StandardRun.chromatography_method_id == self.id).filter(
+                        RetentionTime.retention_time.isnot(None))
 
     def __repr__(self):
         return '<ChromatographyMethod {}>'.format(self.name)

@@ -7,6 +7,9 @@
             <th>Name</th>
             <th>Formula</th>
             <th>Weight</th>
+            <th>Monoisotopic Mass</th>
+            <th>m/z (positive mode)</th>
+            <th>m/z (negative mode)</th>
             <th>Retetion Times</th>
         </tr>
         {% for compound in compounds %}
@@ -15,6 +18,9 @@
                     {{ compound.name }}</a></td>
                 <td>{{ compound.molecular_formula }}</td>
                 <td>{{ compound.molecular_weight }}</td>
+                <td>{{ compound.monoisotopic_mass }}</td>
+                <td>{{ compound.m_z(1) }}</td>
+                <td>{{ compound.m_z(-1) }}</td>
                 <td>
                     {% for rt in compound.retention_times %}
                         <a href="{{ url_for('main.methods') }}">{{ rt.standard_run.chromatography_method.name }}</a>

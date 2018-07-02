@@ -6,7 +6,8 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Retention Times</th>
+            <th>Retention Times Recorded</th>
+            <th>Valid Retention Times</th>
         </tr>
         {% for method in methods %}
             <tr>
@@ -15,6 +16,9 @@
                 <td><a href="{{ url_for('main.retention_times_for_method',
                     id = method.id) }}">
                     {{ method.compounds_with_retention_times().count() }}</a></td>
+                <td><a href="{{ url_for('main.retention_times_for_method',
+                    id = method.id) }}">
+                    {{ method.compounds_with_valid_retention_times().count() }}</a></td>
             </tr>
         {% endfor %}
     </table>
