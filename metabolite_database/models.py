@@ -17,7 +17,6 @@ class Compound(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), index=True, unique=True)
     molecular_formula = db.Column(db.String(128), index=True)
-    molecular_weight = db.Column(db.Float, index=True)
     external_databases = db.relationship('DbXref', back_populates="compound")
     retention_times = db.relationship('RetentionTime',
                                       backref="compound")
@@ -60,7 +59,7 @@ class Compound(db.Model):
         if (self.monoisotopic_mass):
             try:
                 m_z = (self.monoisotopic_mass
-                       - ((valid_atoms['H'] - valid_atoms['e']) * mode))
+                       + ((valid_atoms['H'] - valid_atoms['e']) * mode))
             except (AttributeError, TypeError):
                 raise AssertionError("mode must be integer")
         return m_z
