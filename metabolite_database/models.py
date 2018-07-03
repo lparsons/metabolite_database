@@ -1,5 +1,6 @@
 import re
 from metabolite_database import db
+from sqlalchemy.orm import validates
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -10,7 +11,8 @@ valid_atoms = {
     'H': 1.00782503224,
     'N': 14.0030740052,
     'O': 15.9949146221,
-    'P': 30.97376151}
+    'P': 30.97376151,
+    'S': 31.972072}
 
 
 class Compound(db.Model):
@@ -21,37 +23,36 @@ class Compound(db.Model):
     retention_times = db.relationship('RetentionTime',
                                       backref="compound")
 
-    def is_formula_valid(self):
-        formula = self.molecular_formula
+    @validates('molecular_formula')
+    def is_formula_valid(self, key, formula):
         if formula == '' or formula is None:
-            return False, formula
+            raise AssertionError("Molecular formula must not be blank")
+        check_formula = formula
         for atom in valid_atoms.keys():
-            formula = re.sub(r'{}[\d]*'.format(atom), '', formula)
-        if formula != '':
-            return False, formula
-        else:
-            return True, ''
+            check_formula = re.sub(r'{}[\d]*'.format(atom), '', check_formula)
+        if check_formula != '':
+            raise AssertionError("Invalid formula specified: '{}' not "
+                                 "recognized".format(check_formula))
+        return formula
 
     @hybrid_property
     def monoisotopic_mass(self):
         mass = None
-        # print(self.is_formula_valid())
-        if self.is_formula_valid()[0]:
-            # print(self.molecular_formula)
-            mass = 0.0
-            for atom in valid_atoms.keys():
-                num_atom = 0
-                m = re.match(r'.*{}(\d*).*'.format(atom),
-                             self.molecular_formula)
-                if m:
-                    # print("Num {} atoms: {}".format(atom, m.group(1)))
-                    try:
-                        num_atom = int(m.group(1))
-                    except ValueError:
-                        num_atom = 1
-                # print("weight = {} + ({} * {})".format(
-                #       mass, valid_atoms[atom], num_atom))
-                mass += num_atom * valid_atoms[atom]
+        # print(self.molecular_formula)
+        mass = 0.0
+        for atom in valid_atoms.keys():
+            num_atom = 0
+            m = re.match(r'.*{}(\d*).*'.format(atom),
+                         self.molecular_formula)
+            if m:
+                # print("Num {} atoms: {}".format(atom, m.group(1)))
+                try:
+                    num_atom = int(m.group(1))
+                except ValueError:
+                    num_atom = 1
+            # print("weight = {} + ({} * {})".format(
+            #       mass, valid_atoms[atom], num_atom))
+            mass += num_atom * valid_atoms[atom]
         return mass
 
     def m_z(self, mode):

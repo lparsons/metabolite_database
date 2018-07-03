@@ -1,5 +1,6 @@
 import click
 import csv
+import sys
 from dateutil.parser import parse
 from metabolite_database import db
 from metabolite_database.models import get_one_or_create
@@ -38,37 +39,56 @@ def register(app):
             csvreader = csv.DictReader(csvfh)
             c_created = 0
             rt_created = 0
+            failed_rows = []
             for row in csvreader:
                 # print("Name: {}".format(row["Name"]))
-                c, created = get_one_or_create(
-                    session=db.session, model=Compound, name=row['Name'])
-                if created:
-                    c.molecular_formula = row['Formula']
-                    c.molecular_weight = 0
-                    c_created += 1
-                else:
-                    if c.molecular_formula != row['Formula']:
-                        exit("Error: Compound {} already exists with "
-                             "different formula.\n"
-                             "   Existing: {} - {}\n"
-                             "   New: {} - {}"
-                             .format(c, c.name, c.molecular_formula,
-                                     row['Name'], row['Formula']))
-                rt, created = get_one_or_create(
-                    session=db.session, model=RetentionTime,
-                    compound_id=c.id, standard_run_id=sr.id)
-                if created:
-                    if row['RT'] != '':
-                        try:
-                            rt_value = float(row['RT'])
-                            rt.retention_time = rt_value
-                            c.retention_times.append(rt)
-                            rt_created += 1
-                        except ValueError:
-                            print("Unable to parse retention time: {}"
-                                  .format(row['RT']))
+                try:
+                    c, created = get_one_or_create(
+                        session=db.session, model=Compound, name=row['Name'],
+                        molecular_formula=row['Formula'])
+                    if created:
+                        c_created += 1
+                    else:
+                        if c.molecular_formula != row['Formula']:
+                            sys.stderr.write(
+                                "Error: Compound {} already exists with "
+                                "different formula.\n"
+                                "   Existing: {} - {}\n"
+                                "   New: {} - {}\n"
+                                .format(c, c.name, c.molecular_formula,
+                                        row['Name'], row['Formula']))
+                except AssertionError as e:
+                    sys.stderr.write("Unable to create compound '{}': {}\n"
+                                     .format(row['Name'], e))
+                    failed_rows.append(row)
+                try:
+                    rt, created = get_one_or_create(
+                        session=db.session, model=RetentionTime,
+                        compound_id=c.id, standard_run_id=sr.id)
+                    if created:
+                        if row['RT'] != '':
+                            try:
+                                rt_value = float(row['RT'])
+                                rt.retention_time = rt_value
+                                c.retention_times.append(rt)
+                                rt_created += 1
+                            except ValueError:
+                                sys.stderr.write("Unable to parse retention "
+                                                 "time '{}' for {}\n"
+                                                 .format(row['RT'], c))
+                                failed_rows.append(row)
+                        else:
+                            sys.stderr.write("Retetion time missing for {}\n"
+                                             .format(c))
+                except AssertionError as e:
+                    sys.stderr.write("Unable to record retetion time '{}': "
+                                     "{}\n".format(row['RT'], e))
                 db.session.add_all([c, rt])
 
             print("Created {} new Compounds".format(c_created))
             print("Recorded {} new Retention Times".format(rt_created))
+            print("Invalid rows:")
+            writer = csv.DictWriter(sys.stderr, fieldnames=row.keys())
+            for row in failed_rows:
+                writer.writerow(row)
             db.session.commit()

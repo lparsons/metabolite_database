@@ -1,24 +1,18 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Compound: {{ compound.name }}</h1>
+    <h1>{{ compound.name }}</h1>
+    <p>
+        <strong>{{ compound.molecular_formula }}</strong> (<a target="_blank"
+            href="http://www.hmdb.ca/unearth/q?utf8=%E2%9C%93&query={{ compound.molecular_formula }}&searcher=metabolites">Search HMDB</a>)
+    </p>
     <dl>
-        <dt>Name</dt>
-        <dd>{{ compound.name }}</dd>
-        <dt>Formula</dt>
-        <dd>
-            {{ compound.molecular_formula }} - <a target="_blank"
-                href="http://www.hmdb.ca/unearth/q?utf8=%E2%9C%93&query={{ compound.molecular_formula }}&searcher=metabolites">
-                Search HMDB</a>
-            {% if not compound.is_formula_valid()[0] %}
-                <strong>Invalid Formula: {{ compound.is_formula_valid()[1] }}
-                    not recognized</strong>
-            {% endif %}
-        </dd>
-        <dt>Monoisotopic Mass <a target="_blank" href="https://en.wikipedia.org/wiki/Monoisotopic_mass">?</a></dt>
+        <dt>Monoisotopic Mass</dt>
         <dd>{{ compound.monoisotopic_mass }}</dd>
-        <dt> m/z (positive mode - negative mode)</dt>
-        <dd>{{ compound.m_z(1) }} - {{ compound.m_z(-1) }}</dd>
+        <dt>m/z (positive mode)</dt>
+        <dd>{{ compound.m_z(1) }}
+        <dt>m/z (negative mode)</dt>
+        <dd>{{ compound.m_z(-1) }}</dd>
     </dl>
     <table class="table">
         <tr>

@@ -4,6 +4,7 @@ channels:
     - conda-forge
     - defaults
 dependencies:
+    - python>=3.6
     - flask
     - flask-wtf
     - flask-sqlalchemy
@@ -11,5 +12,4 @@ dependencies:
     - flask-bootstrap
     - flask-moment
     - python-dotenv
-    - dateutil
-    - python-language-server>=0.19.0
+    - python-dateutil

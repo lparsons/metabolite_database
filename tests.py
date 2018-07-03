@@ -28,17 +28,21 @@ class CompoundModelCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_compound(self):
-        c = Compound(name="Test Compound",
-                     molecular_weight=12,
-                     molecular_formula="C2O6")
-        self.assertEqual(c.name, "Test Compound")
-        self.assertEqual(c.molecular_weight, 12)
-        self.assertEqual(c.molecular_formula, "C2O6")
+        c = Compound(name="aconitate",
+                     molecular_formula="C6H6O6")
+        self.assertEqual(c.name, "aconitate")
+        self.assertEqual(c.molecular_formula, "C6H6O6")
+        self.assertEqual(c.monoisotopic_mass, 174.01643792604)
+        self.assertEqual(c.m_z(-1), 173.00916147370944)
+        self.assertEqual(c.m_z(1), 175.02371437837056)
+
+    def test_invalid_formula(self):
+        with self.assertRaises(AssertionError):
+            Compound(name="Invalid compound", molecular_formula="C6Z6O6")
 
     def test_retention_time(self):
-        c = Compound(name="Test Compound",
-                     molecular_weight=12,
-                     molecular_formula="C2O6")
+        c = Compound(name="aconitate",
+                     molecular_formula="C6H6O6")
         cm = ChromatographyMethod(name="Test Method")
         rt = RetentionTime(retention_time=5.25)
         sr = StandardRun(date=datetime.utcnow(), operator="Lance")

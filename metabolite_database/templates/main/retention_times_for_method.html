@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Retention Times for Method "{{ method.name }}"</h1>
+    <h1><strong>{{ method.name }}</strong> Retention Times</h1>
     <table class="table">
         <tr>
             <th>Compound</th>
             <th>Formula</th>
-            <th>Weight</th>
+            <th>Monoisotopic mass</th>
             <th>Retention Time (sec)</th>
             <th>Standard Run</th>
         </tr>
@@ -15,9 +15,9 @@
                 <td><a href="{{ url_for('main.compound', id=compound.id) }}">
                     {{ compound.name }}</a></td>
                 <td>{{ compound.molecular_formula }}</td>
-                <td>{{ compound.molecular_weight }}</td>
+                <td>{{ compound.monoisotopic_mass }}</td>
                 <td>{{ rt.retention_time}}</td>
-                <td>Run on {{ moment(rt.standard_run.date).format('LLL') }} by {{ rt.standard_run.operator}} - {{ rt.standard_run.mzxml_file }}</td>
+                <td>{{ moment(rt.standard_run.date).format('L') }} by {{ rt.standard_run.operator}}: {{ rt.standard_run.mzxml_file }}</td>
             </tr>
         {% endfor %}
     </table>
