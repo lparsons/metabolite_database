@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1><strong>{{ method.name }}</strong></h1>
+
+    <h2>Standard Runs</h2>
+    <table class="table">
+        <tr>
+            <th>Standard Run</th>
+            <th>Retention Times</th>
+        </tr>
+        {% for run in method.standard_runs %}
+            <tr>
+                <td><a href="{{ url_for('main.standard_run', id=run.id) }}">Run on {{ moment(run.date).format('L') }} by {{ run.operator}}</a></td>
+                <td>{{ method.compounds_with_retention_times(standard_run_ids=[run.id]).count() }} retention times / {{ total_compounds }} total compounds</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('main.compound_database', id=method.id) }}">Export as csv</a></p>
+
+    <h2>Mean Retiontion Times</h2>
+    <table class="table">
+        <tr>
+            <th>Compound</th>
+            <th>Formula</th>
+            <th>Monoisotopic mass</th>
+            <th>Mean Retention Time (sec)</th>
+        </tr>
+        {% for compound, mean_rt in retention_times %}
+            <tr>
+                <td><a href="{{ url_for('main.compound', id=compound.id) }}">
+                    {{ compound.name }}</a></td>
+                <td>{{ compound.molecular_formula }}</td>
+                <td>{{ compound.monoisotopic_mass }}</td>
+                {% if mean_rt is none %}
+                    <td class="warning">
+                {% else %}
+                    <td>
+                {% endif %}
+                    {{ mean_rt }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

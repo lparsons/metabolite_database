@@ -1,8 +1,11 @@
 from flask import render_template
+from flask import make_response
 from metabolite_database.models import Compound
 from metabolite_database.models import ChromatographyMethod
 from metabolite_database.models import StandardRun
 from metabolite_database.main import bp
+import io
+import csv
 
 
 @bp.route('/')
@@ -30,14 +33,32 @@ def methods():
     return render_template('main/methods.html', methods=methods)
 
 
-@bp.route('/retention_times/method/<id>')
-@bp.route('/retentiontimes/method/<id>')
-@bp.route('/retention-times/method/<id>')
-def retention_times_for_method(id):
+@bp.route('/method/<id>')
+def method(id):
+    method = ChromatographyMethod.query.filter_by(id=id).first_or_404()
+    total_compounds = Compound.query.count()
+    retention_times = method.retention_time_means()
+    return render_template(
+        'main/method.html',
+        method=method,
+        total_compounds=total_compounds,
+        retention_times=retention_times)
+
+
+@bp.route('/compound_database/method/<id>')
+def compound_database(id):
     method = ChromatographyMethod.query.filter_by(id=id).first_or_404()
     results = method.compounds_with_retention_times()
-    return render_template('main/retention_times_for_method.html',
-                           method=method, results=results)
+    si = io.StringIO()
+    cw = csv.writer(si)
+    for compound, rt in results:
+        cw.writerow((compound.name, compound.molecular_formula,
+                     rt.retention_time))
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = (
+        "attachment; filename={}.csv".format(method.name))
+    output.headers["Content-type"] = "text/csv"
+    return output
 
 
 @bp.route('/standard_runs')

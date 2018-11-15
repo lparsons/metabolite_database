@@ -6,19 +6,16 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Retention Times Recorded</th>
-            <th>Valid Retention Times</th>
+            <th>Number of Standard Runs</th>
+            <th>Compounds with Retention Times</th>
         </tr>
         {% for method in methods %}
             <tr>
-                <td>{{ method.name }}</td>
-                <td>{{ method.description }}</td>
-                <td><a href="{{ url_for('main.retention_times_for_method',
-                    id = method.id) }}">
-                    {{ method.compounds_with_retention_times().count() }}</a></td>
-                <td><a href="{{ url_for('main.retention_times_for_method',
-                    id = method.id) }}">
-                    {{ method.compounds_with_valid_retention_times().count() }}</a></td>
+                <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.name }}</a></td>
+                <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.description }}</a></td>
+                <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.standard_runs | length }}</a></td>
+                <td><a href="{{ url_for('main.method', id=method.id) }}">
+                    {{ method.unique_compounds_with_retention_times().count() }}</a></td>
             </tr>
         {% endfor %}
     </table>

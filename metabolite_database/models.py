@@ -4,6 +4,8 @@ from sqlalchemy.orm import validates
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.sql import label
+from sqlalchemy.sql import func
 
 valid_atoms = {
     'e': 0.00054857990943,
@@ -104,18 +106,33 @@ class ChromatographyMethod(db.Model):
     standard_runs = db.relationship('StandardRun',
                                     backref='chromatography_method')
 
-    def compounds_with_retention_times(self):
-        return db.session.query(Compound, RetentionTime).join(
-            RetentionTime).join(
-                StandardRun).filter(
-                    StandardRun.chromatography_method_id == self.id)
+    def retention_time_means(self, standard_run_ids=None):
+        '''
+        Return list of compounds and retention time means for specified runs
+        '''
+        query = db.session.query(
+            Compound, label('mean_rt',
+                            func.avg(RetentionTime.retention_time)))\
+            .join(RetentionTime).join(StandardRun).filter(
+                StandardRun.chromatography_method_id == self.id)\
+            .group_by(Compound.id)
+        if standard_run_ids:
+            query = query.filter(StandardRun.id.in_(standard_run_ids))
+        return query.all()
 
-    def compounds_with_valid_retention_times(self):
-        return db.session.query(Compound, RetentionTime).join(
-            RetentionTime).join(
-                StandardRun).filter(
-                    StandardRun.chromatography_method_id == self.id).filter(
-                        RetentionTime.retention_time.isnot(None))
+    def compounds_with_retention_times(self, standard_run_ids=None):
+        query = db.session.query(Compound, RetentionTime).\
+            join(RetentionTime).\
+            join(StandardRun).\
+            filter(StandardRun.chromatography_method_id == self.id).\
+            filter(RetentionTime.retention_time.isnot(None))
+        if standard_run_ids:
+            query = query.filter(StandardRun.id.in_(standard_run_ids))
+        return query
+
+    def unique_compounds_with_retention_times(self, standard_run_ids=None):
+        query = self.compounds_with_retention_times(standard_run_ids)
+        return query.distinct(Compound.id)
 
     def __repr__(self):
         return '<ChromatographyMethod {}>'.format(self.name)

@@ -3,6 +3,8 @@
 {% block app_content %}
     <h1>Standard Run: {{  moment(run.date).format('LLL') }}</h1>
     <dl>
+        <dt>Method</dt>
+        <dd><a href="{{ url_for('main.method', id=run.chromatography_method.id) }}">{{ run.chromatography_method.name }}</a></dd>
         <dt>Date</dt>
         <dd>{{ moment(run.date).format('LLL') }}</dd>
         <dt>Operator</dt>
@@ -12,15 +14,19 @@
     </dl>
     <table class="table">
         <tr>
-            <th>
-            <th>Method</th>
+            <th>Compound</th>
             <th>Retetion Time</th>
         </tr>
-        {% for rt in compound.retention_times %}
+        {% for rt in run.retention_times %}
             <tr>
-                <td><a href="{{ url_for('main.methods') }}">
-                    {{ rt.chromatography_method.name }}</a></td>
-                <td>{{ rt.retention_time }}</td>
+                <td><a href="{{ url_for('main.compound', id=rt.compound.id) }}">
+                    {{ rt.compound.name }}</a></td>
+                {% if rt.retention_time is none %}
+                    <td class="warning">
+                {% else %}
+                    <td>
+                {% endif %}
+                    {{ rt.retention_time }}</td>
             </tr>
         {% endfor %}
     </table>
