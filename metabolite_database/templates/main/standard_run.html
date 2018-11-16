@@ -6,7 +6,7 @@
         <dt>Method</dt>
         <dd><a href="{{ url_for('main.method', id=run.chromatography_method.id) }}">{{ run.chromatography_method.name }}</a></dd>
         <dt>Date</dt>
-        <dd>{{ moment(run.date).format('LLL') }}</dd>
+        <dd>{{ moment(run.date).format('l') }}</dd>
         <dt>Operator</dt>
         <dd>{{ run.operator }}</dd>
         <dt>mzXML File</dt>

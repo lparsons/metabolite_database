@@ -16,29 +16,54 @@
             </tr>
         {% endfor %}
     </table>
-    <p><a href="{{ url_for('main.compound_database', id=method.id) }}">Export as csv</a></p>
 
-    <h2>Mean Retiontion Times</h2>
-    <table class="table">
-        <tr>
-            <th>Compound</th>
-            <th>Formula</th>
-            <th>Monoisotopic mass</th>
-            <th>Mean Retention Time (sec)</th>
-        </tr>
-        {% for compound, mean_rt in retention_times %}
+    <h2>Select Compounds and Standard Runs</h2>
+    <form action="" method="post" novalidate>
+        {{ selectform.hidden_tag() }}
+        <p>
+            {{ selectform.compoundlist.label }}<br>
+            {{ selectform.compoundlist() }}
+            {% for error in selectform.compoundlist.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ selectform.standardruns.label }}<br>
+            {{ selectform.standardruns() }}
+            {% for error in selectform.standardruns.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ selectform.submit() }}</p>
+        {% if retention_times is not none %}
+            <p>{{ selectform.export() }}</p>
+        {% endif %}
+    </form>
+
+
+    {% if retention_times is not none %}
+        <h2>Mean Retiontion Times</h2>
+        <table class="table">
             <tr>
-                <td><a href="{{ url_for('main.compound', id=compound.id) }}">
-                    {{ compound.name }}</a></td>
-                <td>{{ compound.molecular_formula }}</td>
-                <td>{{ compound.monoisotopic_mass }}</td>
-                {% if mean_rt is none %}
-                    <td class="warning">
-                {% else %}
-                    <td>
-                {% endif %}
-                    {{ mean_rt }}</td>
+                <th>Compound</th>
+                <th>Formula</th>
+                <th>Monoisotopic mass</th>
+                <th>Mean Retention Time (sec)</th>
             </tr>
-        {% endfor %}
-    </table>
+            {% for compound, mean_rt in retention_times %}
+                <tr>
+                    <td><a href="{{ url_for('main.compound', id=compound.id) }}">
+                        {{ compound.name }}</a></td>
+                    <td>{{ compound.molecular_formula }}</td>
+                    <td>{{ compound.monoisotopic_mass }}</td>
+                    {% if mean_rt is none %}
+                        <td class="warning">
+                    {% else %}
+                        <td>
+                    {% endif %}
+                        {{ mean_rt }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endblock %}

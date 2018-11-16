@@ -11,11 +11,10 @@
         </tr>
         {% for run in runs %}
             <tr>
-                <td>{{ moment(run.date).format('LLL') }}</td>
-                <td>{{ run.operator}}</td>
-                <td>{{ run.mzxml_file }}</td>
-                <td>{{ run.retention_times|length }}</a></td>
-                </td>
+                <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ moment(run.date).format('LLL') }}</a></td>
+                <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.operator}}</a></td>
+                <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.mzxml_file }}</a></td>
+                <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.retention_times|length }}</a></td>
             </tr>
         {% endfor %}
     </table>
