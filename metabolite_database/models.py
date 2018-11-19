@@ -17,6 +17,14 @@ valid_atoms = {
     'S': 31.972072}
 
 
+compound_lists = db.Table(
+    'compoundlists',
+    db.Column('compound_id', db.Integer,
+              db.ForeignKey('compound.id'), primary_key=True),
+    db.Column('compound_list_id', db.Integer,
+              db.ForeignKey('compound_list.id'), primary_key=True))
+
+
 class Compound(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), index=True, unique=True)
@@ -24,6 +32,9 @@ class Compound(db.Model):
     external_databases = db.relationship('DbXref', back_populates="compound")
     retention_times = db.relationship('RetentionTime',
                                       backref="compound")
+    compound_lists = db.relationship(
+        'CompoundList', secondary=compound_lists, lazy='subquery',
+        backref=db.backref('compounds', lazy=True))
 
     @validates('molecular_formula')
     def is_formula_valid(self, key, formula):
@@ -69,6 +80,12 @@ class Compound(db.Model):
 
     def __repr__(self):
         return '<Compound {}>'.format(self.name)
+
+
+class CompoundList(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256), unique=True)
+    description = db.Column(db.Text)
 
 
 class DbXref(db.Model):

@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Compounds</h1>
+    <h1>{{ compound_list.name }}</h1>
+    <p>{{ compound_list.description }}</p>
+    <p>{{ compound_list.compounds | length }} compounds</p>
+
+    <h2>Compounds</h2>
     <table class="table">
         <tr>
             <th>Name</th>
@@ -12,7 +16,7 @@
             <th>Retetion Times</th>
             <th>Compound Lists</th>
         </tr>
-        {% for compound in compounds %}
+        {% for compound in compound_list.compounds %}
             <tr>
                 <td><a href="{{ url_for('main.compound', id=compound.id) }}">
                     {{ compound.name }}</a></td>

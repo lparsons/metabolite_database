@@ -14,6 +14,15 @@
         <dt>m/z (negative mode)</dt>
         <dd>{{ compound.m_z(-1) }}</dd>
     </dl>
+
+    <h2>Compound Lists</h2>
+    <ul>
+    {% for list in compound.compound_lists %}
+        <li><a href="{{ url_for('main.compound_list', id=list.id) }}">{{ list.name }}: {{ list.description }}</a></li>
+    {% endfor %}
+    </ul>
+
+    <h2>Standard Runs</h2>
     <table class="table">
         <tr>
             <th>Method</th>
