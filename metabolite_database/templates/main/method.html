@@ -1,43 +1,31 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
     <h1><strong>{{ method.name }}</strong></h1>
 
-    <h2>Standard Runs</h2>
-    <table class="table">
-        <tr>
-            <th>Standard Run</th>
-            <th>Retention Times</th>
-        </tr>
-        {% for run in method.standard_runs %}
-            <tr>
-                <td><a href="{{ url_for('main.standard_run', id=run.id) }}">Run on {{ moment(run.date).format('L') }} by {{ run.operator}}</a></td>
-                <td>{{ method.compounds_with_retention_times(standard_run_ids=[run.id]).count() }} retention times / {{ total_compounds }} total compounds</td>
-            </tr>
-        {% endfor %}
-    </table>
-
     <h2>Select Compounds and Standard Runs</h2>
-    <form action="" method="post" novalidate>
-        {{ selectform.hidden_tag() }}
-        <p>
-            {{ selectform.compoundlist.label }}<br>
-            {{ selectform.compoundlist() }}
-            {% for error in selectform.compoundlist.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ selectform.standardruns.label }}<br>
-            {{ selectform.standardruns() }}
-            {% for error in selectform.standardruns.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ selectform.submit() }}</p>
-        {% if retention_times is not none %}
-            <p>{{ selectform.export() }}</p>
-        {% endif %}
+    <form class="form" method="post" role="form" action="" novalidate>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_errors(form, hiddens="only") }}
+
+        {{ wtf.form_field(form.compoundlist) }}
+
+        {{ form.standardruns.label }}
+        {% for error in form.standardruns.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        {% for choice in form.standardruns %}
+        <div class="form-check">
+            {{ choice(class_="form-check-input") }}
+            {{ choice.label(class="form-check-label") }}
+            <a href="{{ url_for('main.standard_run', id=choice.data) }}">Details</a>
+        </div>
+        {% endfor %}
+
+        {{ wtf.form_field(form.submit) }}
+        {{ wtf.form_field(form.export) }}
+
     </form>
 
 

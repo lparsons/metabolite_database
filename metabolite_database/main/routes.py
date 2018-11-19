@@ -41,21 +41,23 @@ def methods():
 @bp.route('/method/<id>', methods=['GET', 'POST'])
 def method(id):
     method = ChromatographyMethod.query.filter_by(id=id).first_or_404()
-    total_compounds = Compound.query.count()
-    selectform = RetentionTimesForm()
-    selectform.standardruns.choices = [(r.id, "{} by {}"
-                                        .format(r.date, r.operator))
-                                       for r in method.standard_runs]
+    form = RetentionTimesForm()
+    form.compoundlist.choices = [("All", "All ({} compounds)".format(
+        Compound.query.count()))]
+    form.standardruns.choices = [
+        (r.id, "Run on {:%Y-%m-%d} by {} ({} retention times)".format(
+            r.date, r.operator, len(r.retention_times)))
+        for r in method.standard_runs]
     retention_times = None
-    if selectform.validate_on_submit():
+    if form.validate_on_submit():
         retention_times = method.retention_time_means(
-            standard_run_ids=selectform.standardruns.data)
-        if selectform.export.data:
+            standard_run_ids=form.standardruns.data)
+        if form.export.data:
             current_app.logger.debug("Export form submitted")
             current_app.logger.debug("compound list data: {}".format(
-                selectform.compoundlist.data))
+                form.compoundlist.data))
             current_app.logger.debug("standard run list data: {}".format(
-                selectform.standardruns.data))
+                form.standardruns.data))
             si = io.StringIO()
             cw = csv.writer(si)
             for compound, mean_rt in retention_times:
@@ -66,14 +68,13 @@ def method(id):
                 "attachment; filename={}.csv".format(method.name))
             output.headers["Content-type"] = "text/csv"
             return output
-        elif selectform.submit.data:
+        elif form.submit.data:
             current_app.logger.debug("Select form submitted")
     return render_template(
         'main/method.html',
         title="{} method".format(method.name),
         method=method,
-        total_compounds=total_compounds,
-        selectform=selectform,
+        form=form,
         retention_times=retention_times)
 
 
