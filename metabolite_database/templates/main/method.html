@@ -17,7 +17,7 @@
         {% endfor %}
         {% for choice in form.standardruns %}
         <div class="form-check">
-            {{ choice(class_="form-check-input") }}
+            {{ choice(checked=True, class="form-check-input") }}
             {{ choice.label(class="form-check-label") }}
             <a href="{{ url_for('main.standard_run', id=choice.data) }}">Details</a>
         </div>

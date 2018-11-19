@@ -1,6 +1,5 @@
-from flask import render_template
-from flask import make_response
-from flask import current_app
+from flask import (render_template, make_response, current_app, redirect,
+                   url_for)
 from metabolite_database.models import Compound
 from metabolite_database.models import ChromatographyMethod
 from metabolite_database.models import StandardRun
@@ -13,8 +12,7 @@ import csv
 @bp.route('/')
 @bp.route('/index')
 def index():
-    user = {'username': 'Lance'}
-    return render_template('main/index.html', title='Home', user=user)
+    return redirect(url_for('main.methods'))
 
 
 @bp.route('/compounds')
