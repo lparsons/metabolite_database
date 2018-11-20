@@ -9,7 +9,7 @@
     {% if title %}
         {{ title }} - Metabolite Database
     {% else %}
-        Welcome to the Rabinowitz Lab Metabolite Database
+        Rabinowitz Lab Metabolite Database
     {% endif %}
 {% endblock %}
 
@@ -28,6 +28,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                <li><a href="{{ url_for('main.compound_lists') }}">Compound Lists</a></li>
                 <li><a href="{{ url_for('main.compounds') }}">Compounds</a></li>
                 <li><a href="{{ url_for('main.methods') }}">Methods</a></li>
                 <li><a href="{{ url_for('main.standard_runs') }}">Standard Runs</a></li>

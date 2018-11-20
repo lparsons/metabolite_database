@@ -18,7 +18,7 @@ def index():
 def compounds():
     compounds = Compound.query.all()
     return render_template('main/compounds.html',
-                           title="Compound list", compounds=compounds)
+                           title="All Compounds", compounds=compounds)
 
 
 @bp.route('/compound/<id>')
@@ -26,6 +26,14 @@ def compound(id):
     compound = Compound.query.filter_by(id=id).first_or_404()
     return render_template('main/compound.html',
                            title=compound.name, compound=compound)
+
+
+@bp.route('/compound_lists')
+def compound_lists():
+    compound_lists = CompoundList.query.all()
+    return render_template('main/compound_lists.html',
+                           title="Compound Lists",
+                           compound_lists=compound_lists)
 
 
 @bp.route('/compound_list/<id>')
