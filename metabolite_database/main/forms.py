@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SelectMultipleField, SubmitField, widgets
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, InputRequired
 
 
 class MultiCheckboxField(SelectMultipleField):
@@ -15,7 +15,8 @@ class MultiCheckboxField(SelectMultipleField):
 
 
 class RetentionTimesForm(FlaskForm):
-    compoundlist = SelectField('Compound List', validators=[DataRequired()])
+    compoundlist = SelectField('Compound List', coerce=int,
+                               validators=[InputRequired()])
     standardruns = MultiCheckboxField(
         'Standard Runs', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Get List')

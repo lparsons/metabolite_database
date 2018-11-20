@@ -54,20 +54,25 @@ def methods():
 @bp.route('/method/<id>', methods=['GET', 'POST'])
 def method(id):
     method = ChromatographyMethod.query.filter_by(id=id).first_or_404()
-    compound_lists = [("All", "All ({} compounds)".format(
+    compound_lists = [(0, "All ({} compounds)".format(
         Compound.query.count()))]
+    compound_lists.extend([(cl.id, "{} ({} compounds)".format(
+        cl.name, len(cl.compounds))) for cl in CompoundList.query.all()])
     standard_runs = [
         (r.id, "Run on {:%Y-%m-%d} by {} ({} retention times)".format(
             r.date, r.operator, len(r.retention_times)))
         for r in method.standard_runs]
     form = RetentionTimesForm(
-        compoundlist="All",
+        compoundlist=0,
         standardruns=[r.id for r in method.standard_runs])
     form.compoundlist.choices = compound_lists
     form.standardruns.choices = standard_runs
     retention_times = None
+    current_app.logger.debug("compound list data: {}".format(
+        form.compoundlist.data))
     if form.validate_on_submit():
         retention_times = method.retention_time_means(
+            compound_list_id=form.compoundlist.data,
             standard_run_ids=form.standardruns.data)
         if form.export.data:
             current_app.logger.debug("Export form submitted")

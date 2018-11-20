@@ -4,8 +4,8 @@ from sqlalchemy.orm import validates
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.sql import label
-from sqlalchemy.sql import func
+from sqlalchemy.sql import label, func
+from flask import current_app
 
 valid_atoms = {
     'e': 0.00054857990943,
@@ -123,18 +123,24 @@ class ChromatographyMethod(db.Model):
     standard_runs = db.relationship('StandardRun',
                                     backref='chromatography_method')
 
-    def retention_time_means(self, standard_run_ids=None):
+    def retention_time_means(self, standard_run_ids=None,
+                             compound_list_id=None):
         '''
         Return list of compounds and retention time means for specified runs
         '''
-        query = db.session.query(
-            Compound, label('mean_rt',
-                            func.avg(RetentionTime.retention_time)))\
-            .join(RetentionTime).join(StandardRun).filter(
-                StandardRun.chromatography_method_id == self.id)\
-            .group_by(Compound.id)
+        subq = (db.session.query(RetentionTime).join(StandardRun)
+                .filter(StandardRun.chromatography_method_id == self.id))
         if standard_run_ids:
-            query = query.filter(StandardRun.id.in_(standard_run_ids))
+                subq = subq.filter(StandardRun.id.in_(standard_run_ids))
+        subq = subq.subquery()
+        query = (db.session.query(
+            Compound, label('mean_rt', func.avg(subq.c.retention_time)))
+            .outerjoin(subq)
+            .group_by(Compound.id))
+        if compound_list_id:
+            query = query.join(CompoundList, Compound.compound_lists)\
+                .filter(CompoundList.id == compound_list_id)
+        current_app.logger.debug(query)
         return query.all()
 
     def compounds_with_retention_times(self, standard_run_ids=None):
