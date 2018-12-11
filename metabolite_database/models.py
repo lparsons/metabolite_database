@@ -17,7 +17,7 @@ valid_atoms = {
     'S': 31.972072}
 
 
-compound_lists = db.Table(
+compoundlists = db.Table(
     'compoundlists',
     db.Column('compound_id', db.Integer,
               db.ForeignKey('compound.id'), primary_key=True),
@@ -25,16 +25,22 @@ compound_lists = db.Table(
               db.ForeignKey('compound_list.id'), primary_key=True))
 
 
+class CompoundList(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(256), unique=True)
+    description = db.Column(db.Text)
+    compounds = db.relationship('Compound', secondary=compoundlists,
+                                back_populates="compound_lists")
+
+
 class Compound(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), index=True, unique=True)
     molecular_formula = db.Column(db.String(128), index=True)
     external_databases = db.relationship('DbXref', back_populates="compound")
-    retention_times = db.relationship('RetentionTime',
-                                      backref="compound")
-    compound_lists = db.relationship(
-        'CompoundList', secondary=compound_lists, lazy='subquery',
-        backref=db.backref('compounds', lazy=True))
+    retention_times = db.relationship('RetentionTime', backref="compound")
+    compound_lists = db.relationship('CompoundList', secondary=compoundlists,
+                                     back_populates="compounds")
 
     @validates('molecular_formula')
     def is_formula_valid(self, key, formula):
@@ -80,12 +86,6 @@ class Compound(db.Model):
 
     def __repr__(self):
         return '<Compound {}>'.format(self.name)
-
-
-class CompoundList(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), unique=True)
-    description = db.Column(db.Text)
 
 
 class DbXref(db.Model):
@@ -144,7 +144,7 @@ class ChromatographyMethod(db.Model):
         return query.all()
 
     def compounds_with_retention_times(self, standard_run_ids=None):
-        query = db.session.query(Compound, RetentionTime).\
+        query = db.session.query(Compound.id).\
             join(RetentionTime).\
             join(StandardRun).\
             filter(StandardRun.chromatography_method_id == self.id).\
@@ -155,7 +155,9 @@ class ChromatographyMethod(db.Model):
 
     def unique_compounds_with_retention_times(self, standard_run_ids=None):
         query = self.compounds_with_retention_times(standard_run_ids)
-        return query.distinct(Compound.id)
+        query = query.distinct(Compound.id)
+        current_app.logger.debug(query)
+        return query
 
     def __repr__(self):
         return '<ChromatographyMethod {}>'.format(self.name)

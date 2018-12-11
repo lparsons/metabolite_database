@@ -5,9 +5,11 @@ from dateutil.parser import parse
 from metabolite_database import db
 from metabolite_database.models import get_one_or_create
 from metabolite_database.models import Compound
+from metabolite_database.models import CompoundList
 from metabolite_database.models import ChromatographyMethod
 from metabolite_database.models import StandardRun
 from metabolite_database.models import RetentionTime
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def register(app):
@@ -32,8 +34,8 @@ def register(app):
             print("Created new Standard Run: {}".format(sr))
         else:
             if sr.chromatography_method != m:
-                exit("Error: Stanard Run already exists for different method: "
-                     "{}".format(sr.chromatography_method))
+                exit("Error: Standard Run already exists for different method:"
+                     " {}".format(sr.chromatography_method))
         db.session.add_all([m, sr])
         with open(csvfile) as csvfh:
             csvreader = csv.DictReader(csvfh)
@@ -92,3 +94,58 @@ def register(app):
             for row in failed_rows:
                 writer.writerow(row)
             db.session.commit()
+
+    @app.cli.command()
+    @click.argument('csvfile')
+    @click.argument('name')
+    @click.option('-d', '--description', default=None)
+    def add_compound_list(csvfile, name, description):
+        """Create new compound list from CSV file"""
+        list, created = get_one_or_create(
+            session=db.session, model=CompoundList, name=name,
+            description=description)
+        if created:
+            print("Created new compound list: {}".format(list))
+        else:
+            exit("Error: compound list already exists with name: {}"
+                 .format(list.name))
+        db.session.add(list)
+        print("Importing list of compounds from '{}'".format(csvfile))
+        with open(csvfile) as csvfh:
+            csvreader = csv.reader(csvfh)
+            compounds_added = 0
+            compounds_not_found = []
+            for row in csvreader:
+                value = row[0]
+                id = None
+                compound = None
+                try:
+                    id = int(value)
+                    compound = Compound.query.get(id)
+                except ValueError:
+                    pass
+                if not compound:
+                    try:
+                        compound = Compound.query.filter_by(name=value).one()
+                    except NoResultFound:
+                        pass
+                if not compound:
+                    try:
+                        compound = Compound.query.filter_by(
+                            molecular_formula=value).one()
+                    except NoResultFound:
+                        pass
+                if not compound:
+                    compounds_not_found.append(value)
+                    sys.stderr.write("Unable to find compound: {}\n"
+                                     .format(value))
+                else:
+                    print(compound)
+                    list.compounds.append(compound)
+                    compounds_added += 1
+        db.session.add(list)
+        print("Added {} new compounds to compound list {}"
+              .format(compounds_added, list.name))
+        print("Unable to find {} compounds in file".format(
+            len(compounds_not_found)))
+        db.session.commit()
