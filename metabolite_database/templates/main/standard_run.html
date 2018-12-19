@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Standard Run: {{  moment(run.date).format('LLL') }}</h1>
+    <h1>Standard Run: {{  moment(run.date).format('LL') }}</h1>
     <dl>
         <dt>Method</dt>
         <dd><a href="{{ url_for('main.method', id=run.chromatography_method.id) }}">{{ run.chromatography_method.name }}</a></dd>
         <dt>Date</dt>
-        <dd>{{ moment(run.date).format('l') }}</dd>
+        <dd>{{ moment(run.date).format('L') }}</dd>
         <dt>Operator</dt>
         <dd>{{ run.operator }}</dd>
         <dt>mzXML File</dt>

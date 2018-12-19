@@ -20,12 +20,7 @@
                 <td>{{ compound.monoisotopic_mass }}</td>
                 <td>{{ compound.m_z(1) }}</td>
                 <td>{{ compound.m_z(-1) }}</td>
-                <td>
-                    {% for rt in compound.retention_times %}
-                        <a href="{{ url_for('main.methods') }}">{{ rt.standard_run.chromatography_method.name }}</a>
-                        - {{ rt.retention_time }};
-                    {% endfor %}
-                </td>
+                <td>{{ compound.retention_times | length }}</td>
                 <td>{{ compound.compound_lists | length }}</td>
             </tr>
         {% endfor %}

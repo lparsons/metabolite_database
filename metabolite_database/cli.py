@@ -28,14 +28,13 @@ def register(app):
             print("Created new method: {}".format(m))
         sr, created = get_one_or_create(
             session=db.session, model=StandardRun,
-            date=datep, operator=operator)
+            date=datep, operator=operator, chromatography_method=m)
         if created:
             sr.chromatography_method = m
             print("Created new Standard Run: {}".format(sr))
         else:
-            if sr.chromatography_method != m:
-                exit("Error: Standard Run already exists for different method:"
-                     " {}".format(sr.chromatography_method))
+            exit("Error: Standard Run with same operator and date already "
+                 "exists for this chromatography method.")
         db.session.add_all([m, sr])
         with open(csvfile) as csvfh:
             csvreader = csv.DictReader(csvfh)
@@ -64,28 +63,28 @@ def register(app):
                                      .format(row['Name'], e))
                     failed_rows.append(row)
                 try:
+                    rt_value = float(row['RT'])
                     rt, created = get_one_or_create(
                         session=db.session, model=RetentionTime,
                         compound_id=c.id, standard_run_id=sr.id)
                     if created:
-                        if row['RT'] != '':
-                            try:
-                                rt_value = float(row['RT'])
-                                rt.retention_time = rt_value
-                                c.retention_times.append(rt)
-                                rt_created += 1
-                            except ValueError:
-                                sys.stderr.write("Unable to parse retention "
-                                                 "time '{}' for {}\n"
-                                                 .format(row['RT'], c))
-                                failed_rows.append(row)
-                        else:
-                            sys.stderr.write("Retetion time missing for {}\n"
-                                             .format(c))
+                        rt.retention_time = rt_value
+                        c.retention_times.append(rt)
+                        db.session.add_all([c, rt])
+                        rt_created += 1
+                    else:
+                        sys.stderr.write(
+                            "Retention time for this compound and standard "
+                            "run already exists")
+                        failed_rows.append(row)
+                except ValueError:
+                        sys.stderr.write("Unable to parse retention "
+                                         "time '{}' for {}\n"
+                                         .format(row['RT'], c))
+                        failed_rows.append(row)
                 except AssertionError as e:
                     sys.stderr.write("Unable to record retetion time '{}': "
                                      "{}\n".format(row['RT'], e))
-                db.session.add_all([c, rt])
 
             print("Created {} new Compounds".format(c_created))
             print("Recorded {} new Retention Times".format(rt_created))
