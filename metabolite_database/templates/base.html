@@ -1,5 +1,11 @@
 {% extends 'bootstrap/base.html' %}
 
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('static', filename='metabolite_database.css')}}">
+{% endblock %}
+
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
@@ -28,18 +34,10 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('main.index') }}">Home</a></li>
-                <li><a href="{{ url_for('main.compound_lists') }}">Compound Lists</a></li>
                 <li><a href="{{ url_for('main.compounds') }}">Compounds</a></li>
+                <li><a href="{{ url_for('main.compound_lists') }}">Compound Lists</a></li>
                 <li><a href="{{ url_for('main.methods') }}">Methods</a></li>
                 <li><a href="{{ url_for('main.standard_runs') }}">Standard Runs</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                {% if True %}
-                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-                {% else %}
-                <li><a href="">Profile</a></li>
-                <li><a href="">Logout</a></li>
-                {% endif %}
             </ul>
         </div>
     </div>
@@ -59,4 +57,12 @@
         {# application content needs to be provided in the app_content block #}
         {% block app_content %}{% endblock %}
     </div>
+
+    <div class="metaboldb-footer navbar navbar-default">
+        <div class="container text-center">
+            <p>Rabinowitz Lab Metabolite Database - Contact <a href="mailto:csgenome@genomics.princeton.edu">Genomics Computer Support</a> for assistance</p>
+            <p>Copyright Princeton University - 2018</p>
+        </div>
+    </div>
 {% endblock %}
+
