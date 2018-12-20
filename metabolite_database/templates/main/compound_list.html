@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>{{ compound_list.name }}</h1>
-    <p>{{ compound_list.description }}</p>
-    <p>{{ compound_list.compounds | length }} compounds</p>
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <p>{{ compounds | length }} compounds</p>
 
     <h2>Compounds</h2>
     <table class="table">
@@ -16,7 +16,7 @@
             <th>Retetion Times</th>
             <th>Compound Lists</th>
         </tr>
-        {% for compound in compound_list.compounds %}
+        {% for compound in compounds %}
             <tr>
                 <td><a href="{{ url_for('main.compound', id=compound.id) }}">
                     {{ compound.name }}</a></td>
@@ -24,12 +24,7 @@
                 <td>{{ compound.monoisotopic_mass }}</td>
                 <td>{{ compound.m_z(1) }}</td>
                 <td>{{ compound.m_z(-1) }}</td>
-                <td>
-                    {% for rt in compound.retention_times %}
-                        <a href="{{ url_for('main.methods') }}">{{ rt.standard_run.chromatography_method.name }}</a>
-                        - {{ rt.retention_time }};
-                    {% endfor %}
-                </td>
+                <td>{{ compound.retention_times | length }}</td>
                 <td>{{ compound.compound_lists | length }}</td>
             </tr>
         {% endfor %}

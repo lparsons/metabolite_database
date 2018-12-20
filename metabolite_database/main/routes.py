@@ -17,8 +17,10 @@ def index():
 @bp.route('/compounds')
 def compounds():
     compounds = Compound.query.all()
-    return render_template('main/compounds.html',
-                           title="All Compounds", compounds=compounds)
+    return render_template('main/compound_list.html',
+                           title="All Compounds",
+                           description="All compounds in the database",
+                           compounds=compounds)
 
 
 @bp.route('/compound/<id>')
@@ -41,7 +43,8 @@ def compound_list(id):
     compound_list = CompoundList.query.filter_by(id=id).first_or_404()
     return render_template('main/compound_list.html',
                            title=compound_list.name,
-                           compound_list=compound_list)
+                           description=compound_list.description,
+                           compounds=compound_list.compounds)
 
 
 @bp.route('/methods')
