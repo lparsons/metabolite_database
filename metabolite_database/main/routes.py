@@ -90,7 +90,7 @@ def method(id):
                              mean_rt))
             output = make_response(si.getvalue())
             output.headers["Content-Disposition"] = (
-                "attachment; filename={}.csv".format(method.name))
+                'attachment; filename="{}.csv"'.format(method.name))
             output.headers["Content-type"] = "text/csv"
             return output
         elif form.submit.data:
