@@ -46,23 +46,25 @@ def register(app):
             bad_compounds = []
             bad_retention_times = []
             for row in csvreader:
-                # print("Name: {}".format(row["Name"]))
+                name = row["Name"].strip()
+                formula = row["Formula"].strip()
+                rt_string = row["RT"].strip()
                 try:
-                    c = Compound.query.filter_by(name=row["Name"]).one()
-                    assert (c.molecular_formula == row['Formula'])
+                    c = Compound.query.filter_by(name=name).one()
+                    assert (c.molecular_formula == formula)
                 except NoResultFound:
                     try:
                         c, created = get_one_or_create(
                             session=db.session, model=Compound,
-                            name=row['Name'],
-                            molecular_formula=row['Formula'])
+                            name=name,
+                            molecular_formula=formula)
                         if created:
                             c_created += 1
                             db.session.add(c)
                     except AssertionError as e:
                         sys.stderr.write(
                             "Error: Unable to record compound {} {}: {}\n"
-                            .format(row['Name'], row['Formula'], e))
+                            .format(name, formula, e))
                         bad_compounds.append(row)
                         next
                 except AssertionError as e:
@@ -71,11 +73,11 @@ def register(app):
                         "formula.\n"
                         "   Existing: {} - {}\n"
                         "   New: {} - {}\n"
-                        .format(c, c.name, c.molecular_formula, row['Name'],
-                                row['Formula']))
+                        .format(c, c.name, c.molecular_formula, name,
+                                formula))
                     bad_compounds.append(row)
                 try:
-                    rt_value = float(row['RT'])
+                    rt_value = float(rt_string)
                     rt, created = get_one_or_create(
                         session=db.session, model=RetentionTime,
                         compound_id=c.id, standard_run_id=sr.id)
@@ -92,11 +94,11 @@ def register(app):
                 except ValueError:
                         sys.stderr.write("Unable to parse retention "
                                          "time '{}' for {}\n"
-                                         .format(row['RT'], c))
+                                         .format(rt_string, c))
                         bad_retention_times.append(row)
                 except AssertionError as e:
                     sys.stderr.write("Unable to record retetion time '{}': "
-                                     "{}\n".format(row['RT'], e))
+                                     "{}\n".format(rt_string, e))
                     bad_retention_times.append(row)
 
             print("Created {} new Compounds".format(c_created))

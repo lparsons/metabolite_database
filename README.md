@@ -43,4 +43,5 @@ Metabolite database used by the Rabinowitz Lab
      # flask import-csv data/Knowns-new-E-waters-25min-lparsons.csv "E-waters-25min" "2018-12-20" "Lance Parsons"
      # flask add-compound-list data/compound_list_lparsons.csv "Lance's Selected Compounds"
      flask import-csv data/rutgers_qe_plus_hilic_2018-05.csv "Rutgers QE PLUS HILIC" "2018-04-18" "Xiaoyang Su" --method-description "22min HILIC runs on Rutgers Q Exactive PLUS"
+     flask import-csv data/Knowns-new-Hilic25min-QE2_QE-plus-scalar_lifeng.csv "Hilic-25min-QE2" "2018-12-20" "Lifeng Yang"
      ```
