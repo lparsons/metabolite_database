@@ -85,6 +85,7 @@ def method(id):
                 form.standardruns.data))
             si = io.StringIO()
             cw = csv.writer(si)
+            cw.writerow(("compound", "formula", "RT"))
             for compound, mean_rt in retention_times:
                 cw.writerow((compound.name, compound.molecular_formula,
                              mean_rt))
