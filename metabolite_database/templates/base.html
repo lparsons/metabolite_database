@@ -1,68 +1,71 @@
 {% extends 'bootstrap/base.html' %}
 
 {% block styles %}
-{{super()}}
-<link rel="stylesheet"
-      href="{{url_for('static', filename='metabolite_database.css')}}">
+  {{super()}}
+  <link rel="stylesheet" href="{{url_for('static', filename='metabolite_database.css')}}">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 {% endblock %}
 
 {% block scripts %}
-    {{ super() }}
-    {{ moment.include_moment() }}
+  {{ super() }}
+  {{ moment.include_moment() }}
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
 {% endblock %}
 
 {% block title %}
-    {% if title %}
-        {{ title }} - Metabolite Database
-    {% else %}
-        Rabinowitz Lab Metabolite Database
-    {% endif %}
+  {% if title %}
+    {{ title }} - Metabolite Database
+  {% else %}
+    Rabinowitz Lab Metabolite Database
+  {% endif %}
 {% endblock %}
 
 {% block navbar %}
-<nav class="navbar navbar-default">
+  <nav class="navbar navbar-default">
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">Metabolite Database</a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('main.index') }}">Home</a></li>
-                <li><a href="{{ url_for('main.compounds') }}">Compounds</a></li>
-                <li><a href="{{ url_for('main.compound_lists') }}">Compound Lists</a></li>
-                <li><a href="{{ url_for('main.methods') }}">Methods</a></li>
-                <li><a href="{{ url_for('main.standard_runs') }}">Standard Runs</a></li>
-            </ul>
-        </div>
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">Metabolite
+          Database</a>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="{{ url_for('main.index') }}">Home</a></li>
+          <li><a href="{{ url_for('main.compounds') }}">Compounds</a></li>
+          <li><a href="{{ url_for('main.compound_lists') }}">Compound Lists</a></li>
+          <li><a href="{{ url_for('main.methods') }}">Methods</a></li>
+          <li><a href="{{ url_for('main.standard_runs') }}">Standard Runs</a></li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info" role="alert">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
-        {# application content needs to be provided in the app_content block #}
-        {% block app_content %}{% endblock %}
-    </div>
+    {# application content needs to be provided in the app_content block #}
+    {% block app_content %}{% endblock %}
+  </div>
 
-    <div class="metaboldb-footer navbar navbar-default">
-        <div class="container text-center">
-            <p>Rabinowitz Lab Metabolite Database - Contact <a href="mailto:csgenome@genomics.princeton.edu">Genomics Computer Support</a> for assistance</p>
-            <p>Copyright Princeton University - 2018</p>
-        </div>
+  <div class="metaboldb-footer navbar navbar-default">
+    <div class="container text-center">
+      <p>Rabinowitz Lab Metabolite Database - Contact <a href="mailto:csgenome@genomics.princeton.edu">Genomics
+          Computer Support</a> for assistance</p>
+      <p>Copyright Princeton University - 2018</p>
     </div>
+  </div>
 {% endblock %}
-

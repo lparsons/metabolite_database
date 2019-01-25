@@ -1,32 +1,46 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+  {{super()}}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#compound_list').DataTable();
+    });
+  </script>
+{% endblock %}
+
 {% block app_content %}
   <h1>{{ title }}</h1>
   <p>{{ description }}</p>
   <p>{{ compounds | length }} compounds</p>
 
   <h2>Compounds</h2>
-  <table class="table">
-    <tr>
-      <th>Name</th>
-      <th>Formula</th>
-      <th>Monoisotopic Mass</th>
-      <th>m/z (positive mode)</th>
-      <th>m/z (negative mode)</th>
-      <th>Retetion Times</th>
-      <th>Compound Lists</th>
-    </tr>
-    {% for compound in compounds %}
+  <table id="compound_list" class="table">
+    <thead>
       <tr>
-        <td><a href="{{ url_for('main.compound', id=compound.id) }}">
-            {{ compound.name }}</a></td>
-        <td>{{ compound.molecular_formula }}</td>
-        <td>{{ compound.monoisotopic_mass }}</td>
-        <td>{{ compound.m_z(1) }}</td>
-        <td>{{ compound.m_z(-1) }}</td>
-        <td>{{ compound.retention_times | length }}</td>
-        <td>{{ compound.compound_lists | length }}</td>
+        <th>Name</th>
+        <th>Formula</th>
+        <th>Monoisotopic Mass</th>
+        <th>m/z (positive mode)</th>
+        <th>m/z (negative mode)</th>
+        <th>Retetion Times</th>
+        <th>Compound Lists</th>
       </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+      {% for compound in compounds %}
+        <tr>
+          <td><a href="{{ url_for('main.compound', id=compound.id) }}">
+              {{ compound.name }}</a></td>
+          <td>{{ compound.molecular_formula }}</td>
+          <td>{{ compound.monoisotopic_mass }}</td>
+          <td>{{ compound.m_z(1) }}</td>
+          <td>{{ compound.m_z(-1) }}</td>
+          <td>{{ compound.retention_times | length }}</td>
+          <td>{{ compound.compound_lists | length }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
+
 {% endblock %}

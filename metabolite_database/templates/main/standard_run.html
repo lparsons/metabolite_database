@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+  {{super()}}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#retention_times').DataTable();
+    });
+  </script>
+{% endblock %}
+
 {% block app_content %}
   <h1>Standard Run: {{ moment(run.date).format('LL') }}</h1>
   <dl>
@@ -12,23 +21,27 @@
     <dt>mzXML File</dt>
     <dd>{{ run.mzxml_file }}</dd>
   </dl>
-  <table class="table">
-    <tr>
-      <th>Compound</th>
-      <th>Retetion Time</th>
-    </tr>
-    {% for rt in run.retention_times %}
+  <table id="retention_times" class="table">
+    <thead>
       <tr>
-        <td><a href="{{ url_for('main.compound', id=rt.compound.id) }}">
-            {{ rt.compound.name }}</a></td>
-        {% if rt.retention_time is none %}
-          <td class="warning">
-        {% else %}
-          <td>
-        {% endif %}
-          {{ rt.retention_time }}
-        </td>
+        <th>Compound</th>
+        <th>Retetion Time</th>
       </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+      {% for rt in run.retention_times %}
+        <tr>
+          <td><a href="{{ url_for('main.compound', id=rt.compound.id) }}">
+              {{ rt.compound.name }}</a></td>
+          {% if rt.retention_time is none %}
+            <td class="warning">
+          {% else %}
+            <td>
+          {% endif %}
+            {{ rt.retention_time }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 {% endblock %}

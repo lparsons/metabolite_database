@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block scripts %}
+  {{super()}}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#retention_time_table').DataTable();
+    });
+  </script>
+{% endblock %}
+
 {% block app_content %}
   <h1><strong>{{ method.name }}</strong></h1>
 
@@ -30,28 +39,32 @@
 
   {% if retention_times is not none %}
   <h2>Mean Retiontion Times</h2>
-  <table class="table">
-    <tr>
-      <th>Compound</th>
-      <th>Formula</th>
-      <th>Monoisotopic mass</th>
-      <th>Mean Retention Time (sec)</th>
-    </tr>
-    {% for compound, mean_rt in retention_times %}
+  <table id="retention_time_table" class="table">
+    <thead>
       <tr>
-        <td><a href="{{ url_for('main.compound', id=compound.id) }}">
-            {{ compound.name }}</a></td>
-        <td>{{ compound.molecular_formula }}</td>
-        <td>{{ compound.monoisotopic_mass }}</td>
-        {% if mean_rt is none %}
-        <td class="warning">
-        {% else %}
-        <td>
-        {% endif %}
-          {{ mean_rt }}
-        </td>
+        <th>Compound</th>
+        <th>Formula</th>
+        <th>Monoisotopic mass</th>
+        <th>Mean Retention Time (sec)</th>
       </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+      {% for compound, mean_rt in retention_times %}
+        <tr>
+          <td><a href="{{ url_for('main.compound', id=compound.id) }}">
+              {{ compound.name }}</a></td>
+          <td>{{ compound.molecular_formula }}</td>
+          <td>{{ compound.monoisotopic_mass }}</td>
+          {% if mean_rt is none %}
+          <td class="warning">
+          {% else %}
+          <td>
+          {% endif %}
+            {{ mean_rt }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
   {% endif %}
 {% endblock %}

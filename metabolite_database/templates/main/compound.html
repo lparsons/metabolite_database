@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+  {{super()}}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#standard_runs').DataTable();
+    });
+  </script>
+{% endblock %}
+
 {% block app_content %}
   <h1>{{ compound.name }}</h1>
   <p>
@@ -24,17 +33,21 @@
   </ul>
 
   <h2>Standard Runs</h2>
-  <table class="table">
-    <tr>
-      <th>Method</th>
-      <th>Retetion Time</th>
-    </tr>
-    {% for rt in compound.retention_times %}
+  <table id="standard_runs" class="table">
+    <thead>
       <tr>
-        <td><a href="{{ url_for('main.methods') }}">
-            {{ rt.standard_run.chromatography_method.name }}</a></td>
-        <td>{{ rt.retention_time }}</td>
+        <th>Method</th>
+        <th>Retetion Time</th>
       </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+      {% for rt in compound.retention_times %}
+        <tr>
+          <td><a href="{{ url_for('main.methods') }}">
+              {{ rt.standard_run.chromatography_method.name }}</a></td>
+          <td>{{ rt.retention_time }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 {% endblock %}

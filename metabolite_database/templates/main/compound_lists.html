@@ -1,19 +1,32 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+  {{super()}}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#compound_lists').DataTable();
+    });
+  </script>
+{% endblock %}
+
 {% block app_content %}
   <h1>Compound Lists</h1>
-  <table class="table">
-    <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Compounds</th>
-    </tr>
-    {% for compound_list in compound_lists %}
+  <table id="compound_lists" class="table">
+    <thead>
       <tr>
-        <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.name }}</a></td>
-        <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.description }}</a></td>
-        <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.compounds | length }}</a></td>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Compounds</th>
       </tr>
-    {% endfor %}
+    </thead>
+    <tbody>
+      {% for compound_list in compound_lists %}
+        <tr>
+          <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.name }}</a></td>
+          <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.description }}</a></td>
+          <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.compounds | length }}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 {% endblock %}

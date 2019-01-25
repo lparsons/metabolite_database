@@ -9,7 +9,7 @@ from logging.handlers import RotatingFileHandler
 from flask_bootstrap import Bootstrap
 from sqlalchemy import MetaData
 from flask_moment import Moment
-
+from flask_bootstrap import StaticCDN
 
 naming_convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -36,6 +36,7 @@ def create_app(config_class=Config):
         else:
             migrate.init_app(app, db)
     bootstrap.init_app(app)
+    app.extensions['bootstrap']['cdns']['jquery'] = StaticCDN()
     moment.init_app(app)
 
     # Blueprint registration
@@ -45,6 +46,8 @@ def create_app(config_class=Config):
     app.register_blueprint(main_bp)
     from metabolite_database.auth import bp as auth_bp  # noqa: E402,F401
     app.register_blueprint(auth_bp)
+
+
 
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
