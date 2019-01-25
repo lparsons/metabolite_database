@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Standard Runs</h1>
-    <table class="table">
-        <tr>
-            <th>Date</th>
-            <th>Operator</th>
-            <th>MzXML File</th>
-            <th>Compound Retetion Times</th>
-        </tr>
-        {% for run in runs %}
-            <tr>
-                <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ moment(run.date).format('LLL') }}</a></td>
-                <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.operator}}</a></td>
-                <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.mzxml_file }}</a></td>
-                <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.retention_times|length }}</a></td>
-            </tr>
-        {% endfor %}
-    </table>
+  <h1>Standard Runs</h1>
+  <table class="table">
+    <tr>
+      <th>Date</th>
+      <th>Operator</th>
+      <th>MzXML File</th>
+      <th>Compound Retetion Times</th>
+    </tr>
+    {% for run in runs %}
+      <tr>
+        <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ moment(run.date).format('LLL') }}</a></td>
+        <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.operator}}</a></td>
+        <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.mzxml_file }}</a></td>
+        <td><a href="{{url_for('main.standard_run', id=run.id) }}">{{ run.retention_times|length }}</a></td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock %}

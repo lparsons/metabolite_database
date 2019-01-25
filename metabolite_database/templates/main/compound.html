@@ -1,39 +1,40 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>{{ compound.name }}</h1>
-    <p>
-        <strong>{{ compound.molecular_formula }}</strong> (<a target="_blank"
-            href="http://www.hmdb.ca/unearth/q?utf8=%E2%9C%93&query={{ compound.molecular_formula }}&searcher=metabolites">Search HMDB</a>)
-    </p>
-    <dl>
-        <dt>Monoisotopic Mass</dt>
-        <dd>{{ compound.monoisotopic_mass }}</dd>
-        <dt>m/z (positive mode)</dt>
-        <dd>{{ compound.m_z(1) }}
-        <dt>m/z (negative mode)</dt>
-        <dd>{{ compound.m_z(-1) }}</dd>
-    </dl>
+  <h1>{{ compound.name }}</h1>
+  <p>
+    <strong>{{ compound.molecular_formula }}</strong> (<a target="_blank" href="http://www.hmdb.ca/unearth/q?utf8=%E2%9C%93&query={{ compound.molecular_formula }}&searcher=metabolites">Search
+      HMDB</a>)
+  </p>
+  <dl>
+    <dt>Monoisotopic Mass</dt>
+    <dd>{{ compound.monoisotopic_mass }}</dd>
+    <dt>m/z (positive mode)</dt>
+    <dd>{{ compound.m_z(1) }}
+    <dt>m/z (negative mode)</dt>
+    <dd>{{ compound.m_z(-1) }}</dd>
+  </dl>
 
-    <h2>Compound Lists</h2>
-    <ul>
+  <h2>Compound Lists</h2>
+  <ul>
     {% for list in compound.compound_lists %}
-        <li><a href="{{ url_for('main.compound_list', id=list.id) }}">{{ list.name }}: {{ list.description }}</a></li>
+      <li><a href="{{ url_for('main.compound_list', id=list.id) }}">{{ list.name }}:
+          {{ list.description }}</a></li>
     {% endfor %}
-    </ul>
+  </ul>
 
-    <h2>Standard Runs</h2>
-    <table class="table">
-        <tr>
-            <th>Method</th>
-            <th>Retetion Time</th>
-        </tr>
-        {% for rt in compound.retention_times %}
-            <tr>
-                <td><a href="{{ url_for('main.methods') }}">
-                    {{ rt.standard_run.chromatography_method.name }}</a></td>
-                <td>{{ rt.retention_time }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+  <h2>Standard Runs</h2>
+  <table class="table">
+    <tr>
+      <th>Method</th>
+      <th>Retetion Time</th>
+    </tr>
+    {% for rt in compound.retention_times %}
+      <tr>
+        <td><a href="{{ url_for('main.methods') }}">
+            {{ rt.standard_run.chromatography_method.name }}</a></td>
+        <td>{{ rt.retention_time }}</td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock %}

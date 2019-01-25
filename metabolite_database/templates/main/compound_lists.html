@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Compound Lists</h1>
-    <table class="table">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Compounds</th>
-        </tr>
-        {% for compound_list in compound_lists %}
-            <tr>
-                <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.name }}</a></td>
-                <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.description }}</a></td>
-                <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.compounds | length }}</a></td>
-            </tr>
-        {% endfor %}
-    </table>
+  <h1>Compound Lists</h1>
+  <table class="table">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Compounds</th>
+    </tr>
+    {% for compound_list in compound_lists %}
+      <tr>
+        <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.name }}</a></td>
+        <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.description }}</a></td>
+        <td><a href="{{ url_for('main.compound_list', id=compound_list.id) }}">{{ compound_list.compounds | length }}</a></td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock %}

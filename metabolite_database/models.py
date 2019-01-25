@@ -132,7 +132,7 @@ class ChromatographyMethod(db.Model):
         subq = (db.session.query(RetentionTime).join(StandardRun)
                 .filter(StandardRun.chromatography_method_id == self.id))
         if standard_run_ids:
-                subq = subq.filter(StandardRun.id.in_(standard_run_ids))
+            subq = subq.filter(StandardRun.id.in_(standard_run_ids))
         subq = subq.subquery()
         query = (db.session.query(
             Compound, label('mean_rt', func.avg(subq.c.retention_time)))

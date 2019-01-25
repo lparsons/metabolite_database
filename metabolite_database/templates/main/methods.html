@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>Chromatography Methods</h1>
-    <table class="table">
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Number of Standard Runs</th>
-            <th>Compounds with Retention Times</th>
-        </tr>
-        {% for method in methods %}
-            <tr>
-                <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.name }}</a></td>
-                <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.description }}</a></td>
-                <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.standard_runs | length }}</a></td>
-                <td><a href="{{ url_for('main.method', id=method.id) }}">
-                    {{ method.unique_compounds_with_retention_times().count() }}</a></td>
-            </tr>
-        {% endfor %}
-    </table>
+  <h1>Chromatography Methods</h1>
+  <table class="table">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Number of Standard Runs</th>
+      <th>Compounds with Retention Times</th>
+    </tr>
+    {% for method in methods %}
+      <tr>
+        <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.name }}</a></td>
+        <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.description }}</a></td>
+        <td><a href="{{ url_for('main.method', id=method.id) }}">{{ method.standard_runs | length }}</a></td>
+        <td><a href="{{ url_for('main.method', id=method.id) }}">
+            {{ method.unique_compounds_with_retention_times().count() }}</a></td>
+      </tr>
+    {% endfor %}
+  </table>
 {% endblock %}
