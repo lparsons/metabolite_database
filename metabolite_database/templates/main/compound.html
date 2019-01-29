@@ -12,8 +12,8 @@
 {% block app_content %}
   <h1>{{ compound.name }}</h1>
   <p>
-    <strong>{{ compound.molecular_formula }}</strong> (<a target="_blank" href="http://www.hmdb.ca/unearth/q?utf8=%E2%9C%93&query={{ compound.molecular_formula }}&searcher=metabolites">Search
-      HMDB</a>)
+    <strong>{{ compound.molecular_formula }}</strong> (<a target="_blank"
+    href="http://www.hmdb.ca/unearth/q?utf8=%E2%9C%93&query=name%3A%22{{ compound.name | urlencode }}%22+AND+chemical_formula%3A{{ compound.molecular_formula }}&searcher=metabolites&button=">Search HMDB</a>)
   </p>
   <dl>
     <dt>Monoisotopic Mass</dt>
