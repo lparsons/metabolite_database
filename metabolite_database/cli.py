@@ -19,7 +19,9 @@ def register(app):
     @click.argument('date')
     @click.argument('operator')
     @click.option('-d', '--method-description', default=None)
-    def import_csv(csvfile, method, date, operator, method_description=None):
+    @click.option('--run-notes', default=None)
+    def import_csv(csvfile, method, date, operator, method_description=None,
+                   run_notes=None):
         """Import retention times from CSV file"""
         print("Importing records from '{}'".format(csvfile))
         datep = parse(date)
@@ -32,6 +34,8 @@ def register(app):
             date=datep, operator=operator, chromatography_method=m)
         if created:
             sr.chromatography_method = m
+            if run_notes:
+                sr.notes = run_notes
             if method_description:
                 m.description = method_description
             print("Created new Standard Run: {}".format(sr))

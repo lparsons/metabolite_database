@@ -178,6 +178,7 @@ class RetentionTime(db.Model):
 
 class StandardRun(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    notes = db.Column(db.Text)
     date = db.Column(db.DateTime, index=True)
     operator = db.Column(db.String(256), index=True)
     mzxml_file = db.Column(db.String(256), index=True)
