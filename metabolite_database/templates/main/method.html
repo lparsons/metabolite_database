@@ -21,6 +21,8 @@
     {{ wtf.form_field(form.compoundlist) }}
 
     {{ form.standardruns.label }}
+    <p><em>Note: </em>When multiple standard runs are selected, the retention
+      times reported are the average from each selected run.</p>
     {% for error in form.standardruns.errors %}
       <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
