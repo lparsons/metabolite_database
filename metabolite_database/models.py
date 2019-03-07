@@ -38,6 +38,7 @@ class Compound(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(256), index=True, unique=True)
     molecular_formula = db.Column(db.String(128), index=True)
+    notes = db.Column(db.Text)
     external_databases = db.relationship('DbXref', back_populates="compound")
     retention_times = db.relationship('RetentionTime', backref="compound")
     compound_lists = db.relationship('CompoundList', secondary=compoundlists,

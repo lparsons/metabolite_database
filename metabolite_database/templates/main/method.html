@@ -48,6 +48,7 @@
         <th>Formula</th>
         <th>Monoisotopic mass</th>
         <th>Mean Retention Time (sec)</th>
+        <th>Notes</th>
       </tr>
     </thead>
     <tbody>
@@ -64,6 +65,7 @@
           {% endif %}
             {{ mean_rt }}
           </td>
+          <td>{{ compound.notes }}</td>
         </tr>
       {% endfor %}
     </tbody>
