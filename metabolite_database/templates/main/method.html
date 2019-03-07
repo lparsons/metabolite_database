@@ -5,7 +5,33 @@
   {{super()}}
   <script type="text/javascript">
     $(document).ready(function() {
-      $('#retention_time_table').DataTable();
+      $('#retention_time_table').DataTable( {
+        dom: 'lBfrtip',
+        buttons: [
+          {
+            extend: 'csv',
+            text: 'Export ElMaven Compound List',
+            exportOptions: {
+              columns: [0, 1, 3],
+              format: {
+                header: function(data, column, node) {
+                  switch(column) {
+                    case 0:
+                      return "compound";
+                    case 1:
+                      return "formula";
+                    case 3:
+                      return "RT";
+                    default:
+                      return data;
+                  }
+                }
+              }
+            }
+          }
+        ],
+        pageLength: 50
+      });
     });
   </script>
 {% endblock %}
@@ -15,27 +41,29 @@
 
   <h2>Select Compounds and Standard Runs</h2>
   <form class="form" method="post" role="form" action="" novalidate>
-    {{ form.hidden_tag() }}
-    {{ wtf.form_errors(form, hiddens="only") }}
+    <div class="col-md-6">
+      {{ form.hidden_tag() }}
+      {{ wtf.form_errors(form, hiddens="only") }}
 
-    {{ wtf.form_field(form.compoundlist) }}
-
-    {{ form.standardruns.label }}
-    <p><em>Note: </em>When multiple standard runs are selected, the retention
-      times reported are the average from each selected run.</p>
-    {% for error in form.standardruns.errors %}
-      <span style="color: red;">[{{ error }}]</span>
-    {% endfor %}
-    {% for choice in form.standardruns %}
-      <div class="form-check">
-        {{ choice(checked=choice.checked, class="form-check-input") }}
-        {{ choice.label(class="form-check-label") }}
-        <a href="{{ url_for('main.standard_run', id=choice.data) }}">Details</a>
+      {{ wtf.form_field(form.compoundlist) }}
+    </div>
+    <div class="col-md-6">
+      {{ form.standardruns.label }}
+      <p><em>Note: </em>When multiple standard runs are selected, the retention
+        times reported are the average from each selected run.</p>
+      {% for error in form.standardruns.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+      {% endfor %}
+      {% for choice in form.standardruns %}
+        <div class="form-check">
+          {{ choice(checked=choice.checked, class="form-check-input") }}
+          {{ choice.label(class="form-check-label") }}
+          <a href="{{ url_for('main.standard_run', id=choice.data) }}">Details</a>
+        </div>
       </div>
     {% endfor %}
 
     {{ wtf.form_field(form.submit) }}
-    {{ wtf.form_field(form.export) }}
 
   </form>
 
@@ -59,12 +87,10 @@
           <td>{{ compound.molecular_formula }}</td>
           <td>{{ compound.monoisotopic_mass }}</td>
           {% if mean_rt is none %}
-          <td class="warning">
+            <td class="warning"></td>
           {% else %}
-          <td>
+            <td>{{ mean_rt }}</td>
           {% endif %}
-            {{ mean_rt }}
-          </td>
           <td>{{ compound.notes }}</td>
         </tr>
       {% endfor %}

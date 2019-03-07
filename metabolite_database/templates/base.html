@@ -3,13 +3,13 @@
 {% block styles %}
   {{super()}}
   <link rel="stylesheet" href="{{url_for('static', filename='metabolite_database.css')}}">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.4/b-flash-1.5.4/b-html5-1.5.4/datatables.min.css">
 {% endblock %}
 
 {% block scripts %}
   {{ super() }}
   {{ moment.include_moment() }}
-  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.4/b-flash-1.5.4/b-html5-1.5.4/datatables.min.js"></script>
 {% endblock %}
 
 {% block title %}

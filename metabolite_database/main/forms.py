@@ -20,4 +20,3 @@ class RetentionTimesForm(FlaskForm):
     standardruns = MultiCheckboxField(
         'Standard Runs', coerce=int, validators=[DataRequired()])
     submit = SubmitField('Get List')
-    export = SubmitField('Export as CSV')

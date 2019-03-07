@@ -1,11 +1,8 @@
-from flask import (render_template, make_response, current_app, redirect,
-                   url_for)
+from flask import (render_template, current_app, redirect, url_for)
 from metabolite_database.models import (Compound, ChromatographyMethod,
                                         StandardRun, CompoundList)
 from metabolite_database.main import bp
 from metabolite_database.main.forms import RetentionTimesForm
-import io
-import csv
 
 
 @bp.route('/')
@@ -77,24 +74,7 @@ def method(id):
         retention_times = method.retention_time_means(
             compound_list_id=form.compoundlist.data,
             standard_run_ids=form.standardruns.data)
-        if form.export.data:
-            current_app.logger.debug("Export form submitted")
-            current_app.logger.debug("compound list data: {}".format(
-                form.compoundlist.data))
-            current_app.logger.debug("standard run list data: {}".format(
-                form.standardruns.data))
-            si = io.StringIO()
-            cw = csv.writer(si)
-            cw.writerow(("compound", "formula", "RT"))
-            for compound, mean_rt in retention_times:
-                cw.writerow((compound.name, compound.molecular_formula,
-                             mean_rt))
-            output = make_response(si.getvalue())
-            output.headers["Content-Disposition"] = (
-                'attachment; filename="{}.csv"'.format(method.name))
-            output.headers["Content-type"] = "text/csv"
-            return output
-        elif form.submit.data:
+        if form.submit.data:
             current_app.logger.debug("Select form submitted")
     if not form.standardruns.data:
         form.standardruns.process_data([r.id for r in method.standard_runs])

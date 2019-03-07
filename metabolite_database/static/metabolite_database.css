@@ -1,5 +1,9 @@
 .metaboldb-footer {
-	font-size: smaller;
-	padding-top: 10px;
-	margin-top: 20px;
+    font-size: smaller;
+    padding-top: 10px;
+    margin-top: 20px;
+}
+
+.dt-buttons {
+    padding-left: 1em;
 }
