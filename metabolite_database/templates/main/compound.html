@@ -5,6 +5,7 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $('#standard_runs').DataTable();
+      $('#isomers').DataTable();
     });
   </script>
 {% endblock %}
@@ -28,13 +29,52 @@
     <dd>{{ compound.m_z(-1) }}</dd>
   </dl>
 
+  <h2>Isomers</h2>
+  {% if compound.isomers|length > 0 %}
+  <table id="isomers" class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Formula</th>
+        <th>Monoisotopic Mass</th>
+        <th>m/z (positive mode)</th>
+        <th>m/z (negative mode)</th>
+        <th>Notes</th>
+        <th>Retetion Times</th>
+        <th>Compound Lists</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for isomer in compound.isomers %}
+        <tr>
+          <td><a href="{{ url_for('main.compound', id=isomer.id) }}">
+              {{ isomer.name }}</a></td>
+          <td>{{ isomer.molecular_formula }}</td>
+          <td>{{ isomer.monoisotopic_mass }}</td>
+          <td>{{ isomer.m_z(1) }}</td>
+          <td>{{ isomer.m_z(-1) }}</td>
+          <td>{{ isomer.notes }}</td>
+          <td>{{ isomer.retention_times | length }}</td>
+          <td>{{ isomer.compound_lists | length }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No isomers in database</p>
+  {% endif %}
+
   <h2>Compound Lists</h2>
+  {% if compound.compound_lists|length > 0 %}
   <ul>
     {% for list in compound.compound_lists %}
       <li><a href="{{ url_for('main.compound_list', id=list.id) }}">{{ list.name }}:
           {{ list.description }}</a></li>
     {% endfor %}
   </ul>
+  {% else %}
+  <p>Compound is not part of any compound lists</p>
+  {% endif %}
 
   <h2>Standard Runs</h2>
   <table id="standard_runs" class="table">

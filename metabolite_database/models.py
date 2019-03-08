@@ -3,7 +3,7 @@ from metabolite_database import db
 from sqlalchemy.orm import validates
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy.sql import label, func
 from flask import current_app
 
@@ -88,6 +88,7 @@ class Compound(db.Model):
             mass += num_atom * valid_atoms[atom]
         return mass
 
+    @hybrid_method
     def m_z(self, mode):
         m_z = None
         if (self.monoisotopic_mass):
@@ -97,6 +98,12 @@ class Compound(db.Model):
             except (AttributeError, TypeError):
                 raise AssertionError("mode must be integer")
         return m_z
+
+    @hybrid_property
+    def isomers(self):
+        return Compound.query.filter(
+            Compound.molecular_formula == self.molecular_formula,
+            Compound.id != self.id).all()
 
     def __repr__(self):
         return '<Compound {}>'.format(self.name)
