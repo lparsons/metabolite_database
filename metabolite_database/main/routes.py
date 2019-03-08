@@ -1,3 +1,5 @@
+from itertools import groupby
+from operator import attrgetter
 from flask import (render_template, current_app, redirect, url_for)
 from metabolite_database.models import (Compound, ChromatographyMethod,
                                         StandardRun, CompoundList)
@@ -103,3 +105,14 @@ def standard_run(id):
     # TODO Fix date represntation (how to use moment for format?)
     return render_template('main/standard_run.html',
                            title="Standard run: {}".format(run.date), run=run)
+
+
+@bp.route('/isomers')
+def isomers():
+    compounds = Compound.query.order_by(Compound.molecular_formula).all()
+    isomer_groups = [list(c) for k, c in
+                     groupby(compounds, attrgetter('molecular_formula'))]
+    isomer_groups = [item for item in isomer_groups if len(item) > 1]
+    return render_template('main/isomers.html',
+                           title="List of isomers",
+                           isomer_groups=isomer_groups)

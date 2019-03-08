@@ -35,10 +35,6 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th>Formula</th>
-        <th>Monoisotopic Mass</th>
-        <th>m/z (positive mode)</th>
-        <th>m/z (negative mode)</th>
         <th>Notes</th>
         <th>Retetion Times</th>
         <th>Compound Lists</th>
@@ -49,10 +45,6 @@
         <tr>
           <td><a href="{{ url_for('main.compound', id=isomer.id) }}">
               {{ isomer.name }}</a></td>
-          <td>{{ isomer.molecular_formula }}</td>
-          <td>{{ isomer.monoisotopic_mass }}</td>
-          <td>{{ isomer.m_z(1) }}</td>
-          <td>{{ isomer.m_z(-1) }}</td>
           <td>{{ isomer.notes }}</td>
           <td>{{ isomer.retention_times | length }}</td>
           <td>{{ isomer.compound_lists | length }}</td>

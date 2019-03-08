@@ -106,7 +106,7 @@ class Compound(db.Model):
             Compound.id != self.id).all()
 
     def __repr__(self):
-        return '<Compound {}>'.format(self.name)
+        return '<Compound {}:{}>'.format(self.id, self.name)
 
 
 class DbXref(db.Model):

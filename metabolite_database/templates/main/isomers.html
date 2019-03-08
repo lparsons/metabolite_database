@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+  {{super()}}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('#isomers').DataTable();
+    });
+  </script>
+{% endblock %}
+
+{% block app_content %}
+  <h1>{{ title }}</h1>
+
+  <h2>Isomers Groups ({{ isomer_groups | length }})</h2>
+  {% for isomer_group in isomer_groups %}
+    <h4>{{ isomer_group[0].molecular_formula }}</h4>
+    <ul class="list-group">
+    {% for isomer in isomer_group %}
+    <li class="list-group-item">
+      <a href="{{ url_for('main.compound', id=isomer.id) }}">{{ isomer.name }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endfor %}
+{% endblock %}
