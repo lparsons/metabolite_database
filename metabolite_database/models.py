@@ -26,9 +26,18 @@ compoundlists = db.Table(
               db.ForeignKey('compound_list.id'), primary_key=True))
 
 
+def standardize_compound_name(name):
+    '''Return a standardized version of a compound name'''
+    return name.lower()
+
+
+def standardized_compound_name_default(context):
+    return standardize_compound_name(context.get_current_parameters()['name'])
+
+
 class CompoundList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), unique=True)
+    name = db.Column(db.String(256), unique=True, nullable=False)
     description = db.Column(db.Text)
     compounds = db.relationship('Compound', secondary=compoundlists,
                                 back_populates="compound_lists")
@@ -36,8 +45,11 @@ class CompoundList(db.Model):
 
 class Compound(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), index=True, unique=True)
-    molecular_formula = db.Column(db.String(128), index=True)
+    standardized_name = db.Column(db.String(256), index=True, unique=True,
+                                  default=standardized_compound_name_default,
+                                  onupdate=standardized_compound_name_default)
+    name = db.Column(db.String(256), index=True, unique=True, nullable=False)
+    molecular_formula = db.Column(db.String(128), index=True, nullable=False)
     notes = db.Column(db.Text)
     external_databases = db.relationship('DbXref', back_populates="compound")
     retention_times = db.relationship('RetentionTime', backref="compound")
@@ -109,7 +121,7 @@ class DbXref(db.Model):
 
 class ExternalDatabase(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), unique=True)
+    name = db.Column(db.String(256), unique=True, nullable=False)
     url = db.Column(db.String(256))
     compound_url = db.Column(db.String(256))
     compounds = db.relationship('DbXref', back_populates="external_database")
@@ -120,7 +132,7 @@ class ExternalDatabase(db.Model):
 
 class ChromatographyMethod(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True)
+    name = db.Column(db.String(128), unique=True, nullable=False)
     description = db.Column(db.Text)
     standard_runs = db.relationship('StandardRun',
                                     backref='chromatography_method')
@@ -169,7 +181,8 @@ class RetentionTime(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     compound_id = db.Column(
         db.Integer,
-        db.ForeignKey('compound.id'))
+        db.ForeignKey('compound.id'),
+        nullable=False)
     standard_run_id = db.Column(db.Integer, db.ForeignKey('standard_run.id'))
     retention_time = db.Column(db.Float)
 
@@ -180,8 +193,8 @@ class RetentionTime(db.Model):
 class StandardRun(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     notes = db.Column(db.Text)
-    date = db.Column(db.DateTime, index=True)
-    operator = db.Column(db.String(256), index=True)
+    date = db.Column(db.DateTime, index=True, nullable=False)
+    operator = db.Column(db.String(256), index=True, nullable=False)
     mzxml_file = db.Column(db.String(256), index=True)
     chromatography_method_id = db.Column(
         db.Integer, db.ForeignKey('chromatography_method.id'))
@@ -198,6 +211,15 @@ def get_one_or_create(session,
                       create_method='',
                       create_method_kwargs=None,
                       **kwargs):
+    if (model == Compound and 'standardized_name' not in kwargs):
+        name = kwargs.pop('name', None)
+        kwargs['standardized_name'] = standardize_compound_name(name)
+        if create_method_kwargs:
+            create_method_kwargs['name'] = name
+        else:
+            create_method_kwargs = {'name': name}
+        return get_one_or_create(session, model, create_method,
+                                 create_method_kwargs, **kwargs)
     try:
         return session.query(model).filter_by(**kwargs).one(), False
     except NoResultFound:

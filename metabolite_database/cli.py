@@ -9,6 +9,7 @@ from metabolite_database.models import CompoundList
 from metabolite_database.models import ChromatographyMethod
 from metabolite_database.models import StandardRun
 from metabolite_database.models import RetentionTime
+from metabolite_database.models import standardize_compound_name
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -54,7 +55,9 @@ def register(app):
                 formula = row["Formula"].strip()
                 rt_string = row["RT"].strip()
                 try:
-                    c = Compound.query.filter_by(name=name).one()
+                    standardized_name = standardize_compound_name(name)
+                    c = Compound.query.filter_by(
+                        standardized_name=standardized_name).one()
                     assert (c.molecular_formula == formula)
                 except NoResultFound:
                     try:

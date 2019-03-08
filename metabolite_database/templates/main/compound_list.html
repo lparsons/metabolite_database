@@ -4,7 +4,9 @@
   {{super()}}
   <script type="text/javascript">
     $(document).ready(function() {
-      $('#compound_list').DataTable();
+      $('#compound_list').DataTable({
+        pageLength: 50
+      });
     });
   </script>
 {% endblock %}
