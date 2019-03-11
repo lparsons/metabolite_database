@@ -28,7 +28,7 @@ compoundlists = db.Table(
 
 def standardize_compound_name(name):
     '''Return a standardized version of a compound name'''
-    return name.lower()
+    return re.sub('-+', '-', re.sub('[^0-9a-zA-Z]+', '-', name.lower()))
 
 
 def standardized_compound_name_default(context):
@@ -161,7 +161,7 @@ class ChromatographyMethod(db.Model):
         if compound_list_id:
             query = query.join(CompoundList, Compound.compound_lists)\
                 .filter(CompoundList.id == compound_list_id)
-        current_app.logger.debug(query)
+        # current_app.logger.debug(query)
         return query.all()
 
     def compounds_with_retention_times(self, standard_run_ids=None):
