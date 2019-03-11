@@ -76,6 +76,7 @@
         <th>Formula</th>
         <th>Monoisotopic mass</th>
         <th>Mean Retention Time (sec)</th>
+        <th>Isomers</th>
         <th>Notes</th>
       </tr>
     </thead>
@@ -91,6 +92,7 @@
           {% else %}
             <td>{{ mean_rt }}</td>
           {% endif %}
+          <td>{{ compound.isomers | length }}</td>
           <td>{{ compound.notes }}</td>
         </tr>
       {% endfor %}
