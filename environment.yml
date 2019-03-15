@@ -9,7 +9,8 @@ dependencies:
     - flask-wtf
     - flask-sqlalchemy
     - flask-migrate
-    - flask-bootstrap
     - flask-moment
     - python-dotenv
     - python-dateutil
+    - pip:
+        - bootstrap-flask

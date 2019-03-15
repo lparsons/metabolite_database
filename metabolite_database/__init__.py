@@ -9,7 +9,7 @@ from logging.handlers import RotatingFileHandler
 from flask_bootstrap import Bootstrap
 from sqlalchemy import MetaData
 from flask_moment import Moment
-from flask_bootstrap import StaticCDN
+# from flask_bootstrap import StaticCDN
 
 naming_convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -36,7 +36,7 @@ def create_app(config_class=Config):
         else:
             migrate.init_app(app, db)
     bootstrap.init_app(app)
-    app.extensions['bootstrap']['cdns']['jquery'] = StaticCDN()
+    # app.extensions['bootstrap']['cdns']['jquery'] = StaticCDN()
     moment.init_app(app)
 
     # Blueprint registration
