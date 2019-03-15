@@ -5,7 +5,7 @@
   {{super()}}
   <script type="text/javascript">
     $(document).ready(function() {
-      $('#retention_time_table').DataTable( {
+      var data_table = $('#retention_time_table').DataTable( {
         dom: 'lBfrtip',
         buttons: [
           {
@@ -30,8 +30,27 @@
             }
           }
         ],
-        pageLength: 50
+        rowGroup: {
+          enable: false,
+          dataSrc: 1
+        },
+        pageLength: 50,
+        order: [[1, 'asc']]
       });
+      data_table.rowGroup().disable().draw();
+      /* Add event listeners to the two filtering links */
+      $('#isomers').click( function() {
+          data_table.rowGroup().enable();
+          data_table.columns(4).search('[^0]', true, false);
+          data_table.order.fixed([[1, 'asc']]);
+          data_table.draw();
+      } );
+      $('#all').click( function() {
+          data_table.rowGroup().disable();
+          data_table.columns(4).search('', true, false);
+          data_table.order.fixed([]);
+          data_table.draw();
+      } );
     });
   </script>
 {% endblock %}
@@ -69,6 +88,8 @@
 
   {% if retention_times is not none %}
   <h2>Mean Retiontion Times</h2>
+  <a id="isomers" href="#">Show Isomers</a>
+  <a id="all" href="#">Show All</a>
   <table id="retention_time_table" class="table">
     <thead>
       <tr>
