@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block scripts %}
   {{super()}}
@@ -59,30 +58,33 @@
   <h1><strong>{{ method.name }}</strong></h1>
 
   <h2>Select Compounds and Standard Runs</h2>
+  {% from 'bootstrap/form.html' import render_field, form_errors %}
   <form class="form" method="post" role="form" action="" novalidate>
-    <div class="col-md-6">
-      {{ form.hidden_tag() }}
-      {{ wtf.form_errors(form, hiddens="only") }}
+    <div class="row">
+      <div class="col-sm">
+        {{ form.csrf_token() }}
+        {{ form_errors(form, hiddens="only") }}
 
-      {{ wtf.form_field(form.compoundlist) }}
-    </div>
-    <div class="col-md-6">
-      {{ form.standardruns.label }}
-      <p><em>Note: </em>When multiple standard runs are selected, the retention
-        times reported are the average from each selected run.</p>
-      {% for error in form.standardruns.errors %}
-        <span style="color: red;">[{{ error }}]</span>
-      {% endfor %}
-      {% for choice in form.standardruns %}
-        <div class="form-check">
-          {{ choice(checked=choice.checked, class="form-check-input") }}
-          {{ choice.label(class="form-check-label") }}
-          <a href="{{ url_for('main.standard_run', id=choice.data) }}">Details</a>
-        </div>
+        {{ render_field(form.compoundlist) }}
       </div>
-    {% endfor %}
+      <div class="col-sm">
+        {{ form.standardruns.label }}
+        <p><em>Note: </em>When multiple standard runs are selected, the retention
+          times reported are the average from each selected run.</p>
+        {% for error in form.standardruns.errors %}
+          <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+        {% for choice in form.standardruns %}
+          <div class="form-check">
+            {{ choice(checked=choice.checked, class="form-check-input") }}
+            {{ choice.label(class="form-check-label") }}
+            <a href="{{ url_for('main.standard_run', id=choice.data) }}">Details</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
 
-    {{ wtf.form_field(form.submit) }}
+    {{ render_field(form.submit) }}
 
   </form>
 
