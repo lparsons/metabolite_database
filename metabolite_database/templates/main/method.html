@@ -5,13 +5,13 @@
   <script type="text/javascript">
     $(document).ready(function() {
       var data_table = $('#retention_time_table').DataTable( {
-        dom: 'lBfrtip',
         buttons: [
+          'pageLength',
           {
             extend: 'csv',
-            text: 'Export ElMaven Compound List',
+            text: 'Export',
             exportOptions: {
-              columns: [0, 1, 3],
+              columns: [0, 1, 3, 5],
               format: {
                 header: function(data, column, node) {
                   switch(column) {
@@ -21,35 +21,45 @@
                       return "formula";
                     case 3:
                       return "RT";
+                    case 5:
+                      return "note";
                     default:
                       return data;
                   }
                 }
               }
             }
-          }
+          },
+          {
+            text: 'Group isomers',
+            action: function() {
+              data_table.rowGroup().enable();
+              data_table.columns(4).search('[^0]', true, false);
+              data_table.order.fixed([[1, 'asc']]);
+              data_table.draw();
+            }
+          },
+          {
+            text: 'Ungroup',
+            action: function() {
+              data_table.rowGroup().disable();
+              data_table.columns(4).search('', true, false);
+              data_table.order.fixed([]);
+              data_table.draw();
+            }
+          },      
         ],
         rowGroup: {
           enable: false,
           dataSrc: 1
         },
         pageLength: 50,
+        lengthChange: false,
         order: [[1, 'asc']]
       });
+      data_table.buttons().container()
+        .appendTo( $('#retention_time_table_wrapper .col-sm-12:eq(0)' ) );
       data_table.rowGroup().disable().draw();
-      /* Add event listeners to the two filtering links */
-      $('#isomers').click( function() {
-          data_table.rowGroup().enable();
-          data_table.columns(4).search('[^0]', true, false);
-          data_table.order.fixed([[1, 'asc']]);
-          data_table.draw();
-      } );
-      $('#all').click( function() {
-          data_table.rowGroup().disable();
-          data_table.columns(4).search('', true, false);
-          data_table.order.fixed([]);
-          data_table.draw();
-      } );
     });
   </script>
 {% endblock %}
@@ -85,13 +95,11 @@
       </div>
 
     {{ render_field(form.submit) }}
-
   </form>
 
   {% if retention_times is not none %}
+  <p/>
   <h2>Mean Retiontion Times</h2>
-  <a id="isomers" href="#">Show Isomers</a>
-  <a id="all" href="#">Show All</a>
   <table id="retention_time_table" class="table">
     <thead>
       <tr>
@@ -116,7 +124,7 @@
             <td>{{ mean_rt }}</td>
           {% endif %}
           <td>{{ compound.isomers | length }}</td>
-          <td>{{ compound.notes }}</td>
+          <td>{{ compound.notes if compound.notes }}</td>
         </tr>
       {% endfor %}
     </tbody>
